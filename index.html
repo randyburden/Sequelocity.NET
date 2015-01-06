@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Sequelocity.NET : Sequelocity.NET is a simple data access library for the Microsoft .NET Framework providing lightweight ADO.NET wrapper, object mapper, and helper functions.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Sequelocity.NET</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/AmbitEnergyLabs/Sequelocity.NET">View on GitHub</a>
+
+          <h1 id="project_title">Sequelocity.NET</h1>
+          <h2 id="project_tagline">Sequelocity.NET is a simple data access library for the Microsoft .NET Framework providing lightweight ADO.NET wrapper, object mapper, and helper functions.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="sequelocitynet" class="anchor" href="#sequelocitynet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sequelocity.NET</h1>
+
+<p><em>Note that this project is currently in a pre-release state.</em></p>
+
+<h3>
+<a id="what-is-it" class="anchor" href="#what-is-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is it?</h3>
+
+<p>Sequelocity.NET is a simple data access library for the Microsoft .NET Framework providing lightweight ADO.NET wrapper, object mapper, and helper functions.</p>
+
+<p>It enables you to write fluent style syntax creating a more elegant and concise way of writing data access code. </p>
+
+<p>It can be used as a C# single file drop in or referenced as a DLL and found on NuGet ( NuGet release coming soon ).</p>
+
+<h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation?</h3>
+
+<p>Yes, we have documentation. =)</p>
+
+<p><strong>XML Comments</strong></p>
+
+<p>All of the methods in the codebase our heavily XML commented which should give you plenty of intellisense description feel-goodness.</p>
+
+<p><strong>Wiki</strong></p>
+
+<p>We have a growing number of wiki articles that can be found here: <a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki">https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki</a></p>
+
+<p><strong>MSDN-Style Documentation</strong></p>
+
+<p>We will also soon have MSDN-style documentation to explore.</p>
+
+<h3>
+<a id="why-use-it" class="anchor" href="#why-use-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Use It?</h3>
+
+<p>Here is the super awesome list of reasons to use Sequelocity:</p>
+
+<ul>
+<li>Simplifies your code by eliminating repetitive boilerplate code</li>
+<li>Offers a very readable and concise fluent ( method chaining ) syntax</li>
+<li>Automatically handles all database connection opening, closing, and disposing of unneeded resources</li>
+<li>Can map results back to strongly typed objects, dynamic objects, DataSets or DataTables</li>
+<li>Can generate SQL insert statements given a strongly typed object, anonymous object, or dynamic object</li>
+<li>Is backed by over 300 tests</li>
+</ul>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>One of the design goals of Sequelocity is provide a very simple fluent ( method chaining ) programming interface enabling much more concise and readable code than standard ADO.NET code is typically written.</p>
+
+<p>Common Sequelocity code would be implemented like this:</p>
+
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> SequelocityDotNet;
+
+<span class="pl-s">public</span> <span class="pl-s">static</span> SuperHero GetSuperHero( <span class="pl-st">string</span> superHeroName )
+{
+    <span class="pl-s">const</span> <span class="pl-st">string</span> sqlQuery = @<span class="pl-s1"><span class="pl-pds">"</span></span>
+<span class="pl-s1">SELECT  TOP 1 *</span>
+<span class="pl-s1">FROM    SuperHero</span>
+<span class="pl-s1">WHERE   SuperHeroName = @SuperHeroName</span>
+<span class="pl-s1"><span class="pl-pds">"</span></span>;
+
+    <span class="pl-k">var</span> superHero = Sequelocity.GetDatabaseCommand()
+        .SetCommandText( sqlQuery )
+        .AddParameter( <span class="pl-s1"><span class="pl-pds">"</span>@SuperHeroName<span class="pl-pds">"</span></span>, superHeroName, DbType.AnsiString )
+        .ExecuteToList&lt;SuperHero&gt;()
+        .FirstOrDefault();
+
+    <span class="pl-k">return</span> superHero;
+}</pre></div>
+
+<p>Please see the project unit tests for many more examples.</p>
+
+<h3>
+<a id="basic-concepts" class="anchor" href="#basic-concepts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Concepts</h3>
+
+<p>Sequelocity provides two main paths for easy data access: The DatabaseCommand object and DbCommand extension methods.</p>
+
+<h4>
+<a id="databasecommand" class="anchor" href="#databasecommand" aria-hidden="true"><span class="octicon octicon-link"></span></a>DatabaseCommand</h4>
+
+<p>Sequelocity introduces one layer of abstraction upon the native .NET framework System.Data.Common.DbCommand in order to introduce several beneficial features such as automatic connection handling, event handlers, and extension points.</p>
+
+<p><strong>Automatic Connection Handling</strong></p>
+
+<p>When utilizing the DatabaseCommand object, all of its execute methods automatically open and close the underlying database connection and dispose of the underlying ADO.NET DbCommand which removes the need for writing the common and repetitive boilerplate code of opening connections, closing connections, and C# using statements.</p>
+
+<p>Through experience, we've found that the majority of database code simply needs to issue a single query and return the results so we've optimized the library to handle this most common scenario with ease by handling all connection-related concerns and disposing of no longer needed resources.</p>
+
+<p>Of course if you are in need to keep a connection open after issuing a command, there are optional parameters that allow you to specify that giving you complete control of the connection handling.</p>
+
+<p><strong>Event Handlers aka Interception Points aka Hooks</strong></p>
+
+<p>When utilizing the DatabaseCommand object, all of its execute methods will automatically invoke / call all registered event handlers before calling the database ( Pre-Invoke ), after the database has been called and the results returned ( Post-Invoke ), and upon any unhandled exceptions.</p>
+
+<p>It is very easy to register to one of these events in order to facilitate injecting your own behavior, to assist in debugging, or to enable logging queries, results, or exceptions.</p>
+
+<p><strong>Extension Points</strong></p>
+
+<p>If you take a look at the code base for Sequelocity, you will find that almost all of the behavior for the DatabaseCommand object is actually implemented as extension methods. What this means is that new behavior can be easily added by you or your team by simply implementing your own extension methods.</p>
+
+<p>This architectural decision was very much intentional and demonstrates that Sequelocity is not really a framework but a utility and helper library for helping you connect and interact with your ADO.NET supported database of choice. The DatabaseCommand object is just a very simple light-weight wrapper around the .NET framework provided DbCommand in order to enable additional functionality and features.</p>
+
+<h4>
+<a id="dbcommand-extension-methods" class="anchor" href="#dbcommand-extension-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>DbCommand Extension Methods</h4>
+
+<p>Most of the code in Sequelocity is actually just extension methods and a large portion of the behavior of the Sequelocity DatabaseCommand object simply forwards calls to the many extension methods we've created for the .NET framework provided DbCommand. This enables an alternative way of using Sequelocity as just a set of fluent extension methods for the native DbCommand object in order to reduce the repetitive boilerplate code typically required to be written when working with raw ADO.NET.</p>
+
+<p>A majority of the Sequelocity DbCommand extension methods are implemented with the method both taking in the DbCommand as an argument and returning the DbCommand as the result enabling a fluent style syntax creating a more elegant and concise way of writing data access code.</p>
+
+<h3>
+<a id="unit-tests-and-integration-tests" class="anchor" href="#unit-tests-and-integration-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unit Tests and Integration Tests</h3>
+
+<p>Sequelocity is backed by a large test suite comprising over 300 unit and integration tests. These tests serve as a contract specifying the behavior we expect out of each and every method which leads to a lot of tests which appear to be near duplicates of other tests and indeed many of the DatabaseCommand tests are 95% the same code as their DbCommand test counterparts but this is intentional and again is meant to serve as validation of expected method behavior. We hope that such a large test suite will give you confidence and 'the warm and fuzzies' knowing that many, many hours were put into writing tests that cover every inch of code in the Sequelocity code base and it is our hope that this will ensure a low number of bugs, increased quality, and the ability to add new features without breaking existing functionality.</p>
+
+<p>Unit Test vs Integration Test</p>
+
+<ul>
+<li>We define unit tests as code that attempts to isolate a single unit, which we typically consider a method, and confirm its expected behavior attempting to not exercise any external resources. </li>
+<li>We define an integration test as basically the same thing as a unit test except the goal is to also exercise the external resources such as running the method against an actual SQLite or Sql Server database. *Note that 'integration test' usually means more than this meaning but for this project this simplified meaning helps to differentiate the two types of testing being performed.</li>
+</ul>
+
+<p>Project Breakdown:</p>
+
+<ul>
+<li>SequelocityDotNet - This is the main project and contains only a single file named SequelocityDotNet.cs.</li>
+<li>SequelocityDotNet.Tests - These are unit tests as defined above, are the most abundant, and are lightning fast to run.</li>
+<li>SequelocityDotNet.Tests.SQLite - These are integration tests against an in-memory SQLite database and are lightning fast to run.</li>
+<li>SequelocityDotNet.Tests.SqlServer - These are integration tests against a Sql Server database kindly provided by AppHarbor and take about 8 seconds to run depending on your connection speed. *Note that we do not share the ConnectionString to our test Sql Server for obvious reasons so the tests won't be immediately runnable but you can simply replace the ConnectionString with your own and the tests should run just fine as all tests are self contained and will conveniently create any database objects that they need to satisfy the test.</li>
+</ul>
+
+<h3>
+<a id="database-support" class="anchor" href="#database-support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Database Support</h3>
+
+<p>Sequelocity works with all ADO.NET providers including SQL Server, SQLite, SQL CE, Oracle, MySQL, PostgreSQL, Firebird, etc.</p>
+
+<p><strong>Database Provider Specific Implementations</strong></p>
+
+<p>Sequelocity does include a few database provider specific implementation methods listed below. If you would like to contribute additional database provider specific implementations, please feel free to do so by submitting a pull request.</p>
+
+<p>SQLite</p>
+
+<ul>
+<li>GenerateInsertForSQLite - Generates a parameterized SQLite INSERT statement from the given object</li>
+<li>GenerateInsertsForSQLite - Generates a list of concatenated parameterized SQLite INSERT statements from the given list of objects</li>
+</ul>
+
+<p>SQL Server</p>
+
+<ul>
+<li>GenerateInsertForSqlServer - Generates a parameterized SQLite INSERT statement from the given object</li>
+<li>GenerateInsertsForSqlServer - Generates a list of concatenated parameterized SQLite INSERT statements from the given list of objects</li>
+</ul>
+
+<h3>
+<a id="open-source" class="anchor" href="#open-source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Open Source</h3>
+
+<p>Sequelocity is open source software licensed under the MIT License. We love open source and use it extensively in all of our projects so it is with great pleasure that we can contribute back to the developer community with Sequelocity. We encourage you to explore the project, use it to your hearts content, provide feedback, open issue or feature requests, contribute to the project and / or fork it for your own use.</p>
+
+<p>If you do find Sequelocity useful, we would love to hear about your experience and add your name to the list of organizations and/or projects that use Sequelocity.</p>
+
+<h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
+
+<p>MIT License:</p>
+
+<p>Copyright (c) 2015 Ambit Energy. All rights reserved.</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+associated documentation files (the "Software"), to deal in the Software without restriction, including 
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the 
+following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN 
+NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Sequelocity.NET maintained by <a href="https://github.com/AmbitEnergyLabs">AmbitEnergyLabs</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
