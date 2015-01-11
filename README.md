@@ -80,7 +80,7 @@ If you take a look at the code base for Sequelocity, you will find that almost a
 
 This architectural decision was very much intentional and demonstrates that Sequelocity is not really a framework but a utility and helper library for helping you connect and interact with your ADO.NET supported database of choice. The DatabaseCommand object is just a very simple light-weight wrapper around the .NET framework provided DbCommand in order to enable additional functionality and features.
 
-You can visit the [DatabaseCommand Overview](https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki/DatabaseCommand-Overview) wiki page for a more detail on it and examples of working with the DatabaseCommand.
+*You can visit the [DatabaseCommand Overview](https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki/DatabaseCommand-Overview) wiki page for a more detail on it and examples of working with the DatabaseCommand.*
 
 ###Unit Tests and Integration Tests###
 
