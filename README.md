@@ -9,7 +9,7 @@ Sequelocity.NET is a simple data access library for the Microsoft .NET Framework
 
 It enables you to write fluent style syntax creating a more elegant and concise way of writing data access code. 
 
-It can be used as a C# single file drop in or referenced as a DLL and found on NuGet ( NuGet release coming soon ).
+It can be used as a [C# single file drop in](https://raw.githubusercontent.com/AmbitEnergyLabs/Sequelocity.NET/master/src/SequelocityDotNet/SequelocityDotNet.cs) or referenced as a DLL and found on NuGet ( NuGet release coming soon ).
 
 ###Documentation###
 
