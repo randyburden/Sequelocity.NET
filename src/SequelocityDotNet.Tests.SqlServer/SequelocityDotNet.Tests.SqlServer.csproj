@@ -56,6 +56,7 @@
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToListTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertForSqlServerTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertsForSqlServerTests.cs" />
+    <Compile Include="Examples.cs" />
     <Compile Include="SequelocityTests\CreateDbConnectionTests.cs" />
     <Compile Include="SequelocityTests\GetDatabaseCommandForSqlServerTests.cs" />
     <Compile Include="SequelocityTests\GetDatabaseCommandTests.cs" />

@@ -60,6 +60,7 @@
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToListTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertForSqLiteTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertsForSqLiteTests.cs" />
+    <Compile Include="Examples.cs" />
     <Compile Include="SequelocityTests\CreateDbConnectionTests.cs" />
     <Compile Include="SequelocityTests\GetDatabaseCommandForSqLiteTests.cs" />
     <Compile Include="SequelocityTests\GetDatabaseCommandTests.cs" />
