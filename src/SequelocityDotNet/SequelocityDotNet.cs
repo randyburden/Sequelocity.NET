@@ -1,4 +1,6 @@
 ﻿/*
+    Sequelocity.NET v0.1.1
+
     Sequelocity.NET is a simple data access library for the Microsoft .NET
     Framework providing lightweight ADO.NET wrapper, object mapper, and helper
     functions. To find out more, visit the project home page at: 
@@ -63,6 +65,7 @@ namespace SequelocityDotNet
         /// <summary>Gets a <see cref="DatabaseCommand" /> given a <see cref="DbConnection" /> instance.</summary>
         /// <param name="dbConnection"><see cref="DbConnection" /> instance.</param>
         /// <returns>A new <see cref="DatabaseCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="dbConnection" /> parameter is null.</exception>
         public static DatabaseCommand GetDatabaseCommand( DbConnection dbConnection )
         {
             return new DatabaseCommand( dbConnection );
@@ -1094,8 +1097,10 @@ namespace SequelocityDotNet
 
                 databaseCommand.DbCommand.OpenConnection();
 
-                DbProviderFactory dbProviderFactory = DbProviderFactories.GetFactory( databaseCommand.DbCommand.Connection );
 
+
+                DbProviderFactory dbProviderFactory = databaseCommand.DbCommand.Connection.GetDbProviderFactory();
+                
                 DbDataAdapter dataAdapter = dbProviderFactory.CreateDataAdapter();
 
                 if ( dataAdapter == null )
@@ -1180,6 +1185,27 @@ namespace SequelocityDotNet
             PropertiesAndFieldsCache.Add( type, hashtable );
 
             return hashtable;
+        }
+    }
+
+    /// <summary>
+    /// <see cref="DbConnection"/> extensions.
+    /// </summary>
+    public static class DbConnectionExtensions
+    {
+        static readonly PropertyInfo ProviderFactoryPropertyInfo = typeof( DbConnection ).GetProperty( "ProviderFactory", BindingFlags.Instance | BindingFlags.NonPublic );
+
+        /// <summary>
+        /// Gets the database provider factory for the given <see cref="DbConnection"/>.
+        /// </summary>
+        /// <param name="dbConnection">The database connection.</param>
+        /// <returns><see cref="DbProviderFactory"/>.</returns>
+        public static DbProviderFactory GetDbProviderFactory( this DbConnection dbConnection )
+        {
+            // Note that in .NET v4.5 we could use this new method instead which would avoid the reflection:
+            // DbProviderFactory dbProviderFactory = DbProviderFactories.GetFactory( databaseCommand.DbCommand.Connection );
+
+            return ( DbProviderFactory ) ProviderFactoryPropertyInfo.GetValue( dbConnection, null );
         }
     }
 

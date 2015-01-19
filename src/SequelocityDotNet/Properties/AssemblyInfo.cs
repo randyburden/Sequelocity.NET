@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Sequelocity.NET" )]
-[assembly: AssemblyDescription( "Sequelocity.NET is a simple data access library for .NET providing light-weight ADO.NET wrapper, object mapper, and helper functions." )]
+[assembly: AssemblyDescription( "Sequelocity.NET is a simple data access library for the Microsoft .NET Framework providing lightweight ADO.NET wrapper, object mapper, and helper functions." )]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany( "Ambit Energy" )]
 [assembly: AssemblyProduct( "Sequelocity.NET" )]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "0.1.0.0" )]
-[assembly: AssemblyFileVersion( "0.1.0.0" )]
+[assembly: AssemblyVersion( "0.1.1" )]
+[assembly: AssemblyFileVersion( "0.1.1" )]
