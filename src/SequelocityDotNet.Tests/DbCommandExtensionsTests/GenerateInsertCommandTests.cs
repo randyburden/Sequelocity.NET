@@ -138,7 +138,76 @@ namespace SequelocityDotNet.Tests.DbCommandExtensionsTests
 
             // Assert
             var exception = Assert.Catch<ArgumentNullException>( action );
+            Trace.WriteLine( exception.Message );
             Assert.That( exception.Message.Contains( "The 'tableName' parameter must be provided when the object supplied is an anonymous type." ) );
+        }
+
+        [Test]
+        public void Should_Throw_An_Exception_When_Passing_A_Null_Object()
+        {
+            // Arrange
+            CustomerWithFields customer = null;
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            TestDelegate action = () => dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});" );
+
+            // Assert
+            var exception = Assert.Catch<ArgumentNullException>( action );
+            Trace.WriteLine( exception.Message );
+            Assert.That( exception.Message.Contains( "Value cannot be null.\r\nParameter name: obj" ) );
+        }
+
+        [Test]
+        public void Should_Throw_An_Exception_When_Passing_A_Null_SqlInsertStatementTemplate()
+        {
+            // Arrange
+            var customer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            TestDelegate action = () => dbCommand.GenerateInsertCommand( customer, null, "[Customer]" );
+
+            // Assert
+            var exception = Assert.Catch<ArgumentNullException>( action );
+            Trace.WriteLine( exception.Message );
+            Assert.That( exception.Message.Contains( "Value cannot be null.\r\nParameter name: sqlInsertStatementTemplate" ) );
+        }
+
+        [Test]
+        public void Should_Throw_An_Exception_When_Passing_An_Empty_SqlInsertStatementTemplate()
+        {
+            // Arrange
+            var customer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            TestDelegate action = () => dbCommand.GenerateInsertCommand( customer, "", "[Customer]" );
+
+            // Assert
+            var exception = Assert.Catch<ArgumentNullException>( action );
+            Trace.WriteLine( exception.Message );
+            Assert.That( exception.Message.Contains( "The 'sqlInsertStatementTemplate' parameter must not be null, empty, or whitespace." ) );
+        }
+
+        [Test]
+        public void Should_Throw_An_Exception_When_Passing_An_Invalid_SqlInsertStatementTemplate()
+        {
+            // Arrange
+            var customer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            TestDelegate action = () => dbCommand.GenerateInsertCommand( customer, "An_Invalid_Template{0}", "[Customer]" );
+
+            // Assert
+            var exception = Assert.Catch<Exception>( action );
+            Trace.WriteLine( exception.Message );
+            Assert.That( exception.Message.Contains( "The 'sqlInsertStatementTemplate' parameter does not conform to the template requirements of containing three string.Format arguments." ) );
         }
 
         [Test]

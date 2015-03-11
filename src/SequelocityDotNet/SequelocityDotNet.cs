@@ -33,6 +33,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
@@ -1152,39 +1153,39 @@ namespace SequelocityDotNet
     public static class TypeCacher
     {
         /// <summary>
-        /// Cache that stores types as the dictionary key and the type's PropertyInfo and FieldInfo in a Hashtable as the value.
+        /// Cache that stores types as the key and the type's PropertyInfo and FieldInfo in a <see cref="OrderedDictionary"/> as the value.
         /// </summary>
-        private static readonly Dictionary<Type, Hashtable> PropertiesAndFieldsCache = new Dictionary<Type, Hashtable>();
+        private static readonly Dictionary<Type, OrderedDictionary> PropertiesAndFieldsCache = new Dictionary<Type, OrderedDictionary>();
 
         /// <summary>Gets the types properties and fields and caches the results.</summary>
         /// <param name="type">Type.</param>
-        /// <returns>Hashtable of lowercase member names and PropertyInfo or FieldInfo as the values.</returns>
-        public static Hashtable GetPropertiesAndFields( Type type )
+        /// <returns><see cref="OrderedDictionary"/> of lowercase member names and PropertyInfo or FieldInfo as the values.</returns>
+        public static OrderedDictionary GetPropertiesAndFields( Type type )
         {
             if ( PropertiesAndFieldsCache.ContainsKey( type ) )
             {
                 return PropertiesAndFieldsCache[ type ];
             }
 
-            var hashtable = new Hashtable( StringComparer.InvariantCultureIgnoreCase );
-
+            var orderedDictionary = new OrderedDictionary( StringComparer.InvariantCultureIgnoreCase );
+            
             PropertyInfo[] properties = type.GetProperties();
 
             foreach ( PropertyInfo propertyInfo in properties )
             {
-                hashtable[ propertyInfo.Name ] = propertyInfo;
+                orderedDictionary[ propertyInfo.Name ] = propertyInfo;
             }
 
             FieldInfo[] fields = type.GetFields();
 
             foreach ( FieldInfo fieldInfo in fields )
             {
-                hashtable[ fieldInfo.Name ] = fieldInfo;
+                orderedDictionary[ fieldInfo.Name ] = fieldInfo;
             }
 
-            PropertiesAndFieldsCache.Add( type, hashtable );
+            PropertiesAndFieldsCache.Add( type, orderedDictionary );
 
-            return hashtable;
+            return orderedDictionary;
         }
     }
 
@@ -1465,14 +1466,14 @@ namespace SequelocityDotNet
 
             bool didAssignValues = false;
 
-            // Hashtable where the key is a case-insensitive property or field name and the value is the members corresponding PropertyInfo or FieldInfo
-            Hashtable hashtable = TypeCacher.GetPropertiesAndFields( type );
+            // OrderedDictionary where the key is a case-insensitive property or field name and the value is the members corresponding PropertyInfo or FieldInfo
+            OrderedDictionary orderedDictionary = TypeCacher.GetPropertiesAndFields( type );
 
             for ( int i = 0; i < fieldCount; i++ )
             {
                 string dataRecordFieldName = dataRecord.GetName( i ).ToLower();
 
-                object memberInfo = hashtable[ dataRecordFieldName ];
+                object memberInfo = orderedDictionary[dataRecordFieldName];
 
                 if ( memberInfo != null )
                 {
@@ -2176,6 +2177,26 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
         /// </exception>
         public static DbCommand GenerateInsertCommand( this DbCommand dbCommand, object obj, string sqlInsertStatementTemplate, string tableName = null )
         {
+            if ( obj == null )
+            {
+                throw new ArgumentNullException( "obj" );
+            }
+
+            if ( sqlInsertStatementTemplate == null )
+            {
+                throw new ArgumentNullException( "sqlInsertStatementTemplate" );
+            }
+
+            if ( string.IsNullOrWhiteSpace( sqlInsertStatementTemplate ) )
+            {
+                throw new ArgumentNullException( "sqlInsertStatementTemplate", "The 'sqlInsertStatementTemplate' parameter must not be null, empty, or whitespace." );
+            }
+
+            if ( sqlInsertStatementTemplate.Contains( "{0}" ) == false || sqlInsertStatementTemplate.Contains( "{1}" ) == false || sqlInsertStatementTemplate.Contains( "{2}" ) == false )
+            {
+                throw new Exception( "The 'sqlInsertStatementTemplate' parameter does not conform to the template requirements of containing three string.Format arguments. A valid example is: INSERT INTO {0} ({1}) VALUES({2});" );
+            }
+
             if ( tableName == null && obj.IsAnonymousType() )
             {
                 throw new ArgumentNullException( "tableName", "The 'tableName' parameter must be provided when the object supplied is an anonymous type." );
@@ -2186,40 +2207,31 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
                 tableName = "[" + obj.GetType().Name + "]";
             }
 
-            IDictionary<string, object> namesAndValues = GetPropertyAndFieldNamesAndValues( obj );
-
             string linePrefix = Environment.NewLine + "\t";
 
-            string columns = null;
+            string columns = string.Empty;
 
-            string values = null;
-
-            int iteration = 0;
-
-            int namesAndValuesCount = namesAndValues.Count;
-
-            foreach ( var nameAndValue in namesAndValues )
+            string values = string.Empty;
+            
+            IDictionary<string, object> namesAndValues = GetPropertyAndFieldNamesAndValues( obj );
+            
+            foreach( var nameAndValue in namesAndValues )
             {
-                iteration++;
-
-                // Skip inserting nulls
                 if ( nameAndValue.Value == null )
                     continue;
 
-                bool isLastIteration = iteration == namesAndValuesCount;
-
-                columns += linePrefix + "[" + nameAndValue.Key + "]" + ( isLastIteration ? "" : "," );
+                columns += linePrefix + "[" + nameAndValue.Key + "],";
 
                 // Note that we are appending the ordinal parameter position as a suffix to the parameter name in order to create
                 // some uniqueness for each parameter name so that this method can be called repeatedly as well as to aid in debugging.
                 string parameterName = "@" + nameAndValue.Key + "_p" + dbCommand.Parameters.Count;
 
-                values += linePrefix + parameterName + ( isLastIteration ? "" : "," );
+                values += linePrefix + parameterName + ",";
 
                 dbCommand.AddParameter( parameterName, nameAndValue.Value );
             }
 
-            dbCommand.AppendCommandText( string.Format( sqlInsertStatementTemplate, tableName, columns, values ) );
+            dbCommand.AppendCommandText( string.Format( sqlInsertStatementTemplate, tableName, columns.TrimEnd( ',' ), values.TrimEnd( ',' ) ) );
 
             return dbCommand;
         }
@@ -2237,11 +2249,11 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
 
             Type type = obj.GetType();
 
-            Hashtable hashtable = TypeCacher.GetPropertiesAndFields( type );
+            OrderedDictionary orderedDictionary = TypeCacher.GetPropertiesAndFields( type );
 
             var dictionary = new Dictionary<string, object>();
 
-            foreach ( DictionaryEntry entry in hashtable )
+            foreach ( DictionaryEntry entry in orderedDictionary )
             {
                 object value = null;
 

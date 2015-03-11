@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bugs\Bug5.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\AddParametersTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\AddParameterTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\AppendCommandTextTests.cs" />
