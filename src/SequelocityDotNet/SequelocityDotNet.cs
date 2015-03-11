@@ -1,5 +1,5 @@
 ﻿/*
-    Sequelocity.NET v0.1.2
+    Sequelocity.NET v0.2.0
 
     Sequelocity.NET is a simple data access library for the Microsoft .NET
     Framework providing lightweight ADO.NET wrapper, object mapper, and helper
@@ -711,6 +711,31 @@ namespace SequelocityDotNet
             databaseCommand.DbCommand.SetTransaction( dbTransaction );
 
             return databaseCommand;
+        }
+        
+        /// <summary>
+        /// Starts a database transaction and associates it with the <see cref="DatabaseCommand"/> instance.
+        /// </summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <returns>An object representing the new transaction.</returns>
+        public static DbTransaction BeginTransaction( this DatabaseCommand databaseCommand )
+        {
+            DbTransaction transaction = databaseCommand.DbCommand.BeginTransaction();
+            
+            return transaction;
+        }
+
+        /// <summary>
+        /// Starts a database transaction with the specified isolation level and associates it with the <see cref="DatabaseCommand"/> instance.
+        /// </summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+        /// <returns>An object representing the new transaction.</returns>
+        public static DbTransaction BeginTransaction( this DatabaseCommand databaseCommand, IsolationLevel isolationLevel )
+        {
+            DbTransaction transaction = databaseCommand.DbCommand.BeginTransaction( isolationLevel );
+
+            return transaction;
         }
 
         /// <summary>
@@ -1948,6 +1973,39 @@ namespace SequelocityDotNet
             dbCommand.Transaction = dbTransaction;
 
             return dbCommand;
+        }
+
+        /// <summary>
+        /// Starts a database transaction and associates it with the <see cref="DbCommand"/> instance.
+        /// </summary>
+        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
+        /// <returns>An object representing the new transaction.</returns>
+        public static DbTransaction BeginTransaction( this DbCommand dbCommand )
+        {
+            dbCommand.OpenConnection();
+
+            DbTransaction transaction = dbCommand.Connection.BeginTransaction();
+
+            dbCommand.SetTransaction( transaction );
+
+            return transaction;
+        }
+
+        /// <summary>
+        /// Starts a database transaction with the specified isolation level and associates it with the <see cref="DbCommand"/> instance.
+        /// </summary>
+        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
+        /// <param name="isolationLevel">Specifies the isolation level for the transaction.</param>
+        /// <returns>An object representing the new transaction.</returns>
+        public static DbTransaction BeginTransaction( this DbCommand dbCommand, IsolationLevel isolationLevel )
+        {
+            dbCommand.OpenConnection();
+
+            DbTransaction transaction = dbCommand.Connection.BeginTransaction( isolationLevel );
+
+            dbCommand.SetTransaction( transaction );
+
+            return transaction;
         }
 
         /// <summary>Opens a database connection.</summary>

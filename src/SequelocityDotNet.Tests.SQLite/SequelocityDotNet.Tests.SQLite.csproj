@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseCommandExtensionsTests\BeginTransactionTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataTableTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataSetTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDynamicObjectTests.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToListTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertForSqLiteTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertsForSqLiteTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\SetTransactionTests.cs" />
     <Compile Include="Examples.cs" />
     <Compile Include="SequelocityTests\CreateDbConnectionTests.cs" />
     <Compile Include="SequelocityTests\GetDatabaseCommandForSqLiteTests.cs" />

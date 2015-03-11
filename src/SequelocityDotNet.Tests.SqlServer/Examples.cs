@@ -767,5 +767,48 @@ public void AppendCommandText_Example()
 
 #endregion Miscellaneous Helper Methods
 
+#region Transaction Examples
+
+[Test]
+public void Transaction_Example()
+{
+    const string sqlCommand1 = @"
+CREATE TABLE #Customer
+(
+	CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
+	FirstName       NVARCHAR(120)   NOT NULL,
+	LastName        NVARCHAR(120)   NOT NULL,
+	DateOfBirth     DATETIME        NOT NULL
+);
+
+INSERT INTO #Customer VALUES ( 'Clark', 'Kent', '06/18/1938' );
+INSERT INTO #Customer VALUES ( 'Bruce', 'Wayne', '05/27/1939' );
+";
+
+    const string sqlCommand2 = @"
+INSERT INTO #Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
+";
+
+    using ( var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" ) )
+    {
+        using ( var transaction = databaseCommand.BeginTransaction() )
+        {
+            var rowsUpdated = databaseCommand
+                .SetCommandText( sqlCommand1 )
+                .ExecuteNonQuery( keepConnectionOpen: true );
+
+            var nextRowsUpdated = databaseCommand
+                .SetCommandText( sqlCommand2 )
+                .ExecuteNonQuery( keepConnectionOpen: true );
+
+            Assert.That( rowsUpdated == 2 && nextRowsUpdated == 1 );
+
+            if ( rowsUpdated == 2 && nextRowsUpdated == 1 )
+                transaction.Commit();
+        }
+    }
+} 
+
+#endregion Transaction Examples
     }
 }
