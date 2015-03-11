@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet.Tests.SQL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet.Tests.SqlServer", "SequelocityDotNet.Tests.SqlServer\SequelocityDotNet.Tests.SqlServer.csproj", "{D86507B8-1B4E-408F-91D2-C6DEB3BA5F46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet.Tests.MySql", "SequelocityDotNet.Tests.MySql\SequelocityDotNet.Tests.MySql.csproj", "{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D86507B8-1B4E-408F-91D2-C6DEB3BA5F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D86507B8-1B4E-408F-91D2-C6DEB3BA5F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D86507B8-1B4E-408F-91D2-C6DEB3BA5F46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
