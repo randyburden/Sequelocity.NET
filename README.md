@@ -1,7 +1,7 @@
 Sequelocity.NET
 ===============
 
-*Note that this project is currently in a pre-release state.*
+*Note that this project is currently in a pre-release state although it is already being used in production successfully.*
 
 ###What is it?###
 
@@ -25,7 +25,7 @@ Here is the super awesome list of reasons to use Sequelocity:
 - Automatically handles all database connection opening, closing, and disposing of unneeded resources
 - Can map results back to strongly typed objects, dynamic objects, DataSets or DataTables
 - Can generate SQL insert statements given a strongly typed object, anonymous object, or dynamic object
-- Is backed by over 300 tests
+- Is backed by over 400 tests
 
 ###Usage###
 
@@ -84,7 +84,7 @@ This architectural decision was very much intentional and demonstrates that Sequ
 
 ###Unit Tests and Integration Tests###
 
-Sequelocity is backed by a large test suite comprising over 350 unit and integration tests. These tests serve as a contract specifying the behavior we expect out of each and every method which leads to a lot of tests which appear to be near duplicates of other tests and indeed many of the DatabaseCommand tests are 95% the same code as their DbCommand test counterparts but this is intentional and again is meant to serve as validation of expected method behavior. We hope that such a large test suite will give you confidence and 'the warm and fuzzies' knowing that many, many hours were put into writing tests that cover every inch of code in the Sequelocity code base and it is our hope that this will ensure a low number of bugs, increased quality, and the ability to add new features without breaking existing functionality.
+Sequelocity is backed by a large test suite comprising over 400 unit and integration tests. These tests serve as a contract specifying the behavior we expect out of each and every method which leads to a lot of tests which appear to be near duplicates of other tests and indeed many of the DatabaseCommand tests are 95% the same code as their DbCommand test counterparts but this is intentional and again is meant to serve as validation of expected method behavior. We hope that such a large test suite will give you confidence and 'the warm and fuzzies' knowing that many, many hours were put into writing tests that cover every inch of code in the Sequelocity code base and it is our hope that this will ensure a low number of bugs, increased quality, and the ability to add new features without breaking existing functionality.
 
 #####Unit Test vs Integration Test#####
 - We define unit tests as code that attempts to isolate a single unit, which we typically consider a method, and confirm its expected behavior attempting to not exercise any external resources. 
@@ -102,7 +102,7 @@ Sequelocity works with all ADO.NET providers including SQL Server, SQLite, SQL C
 
 **Database Provider Specific Implementations**
 
-Sequelocity does include a few database provider specific implementation methods listed below. If you would like to contribute additional database provider specific implementations, please feel free to do so by submitting a pull request.
+Sequelocity does include a few database provider specific implementation methods listed below. If you would like to contribute additional database provider specific implementations, please feel free to do so by submitting a pull request with accompanying integration tests.
 
 SQLite
 - GenerateInsertForSQLite - Generates a parameterized SQLite INSERT statement from the given object
