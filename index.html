@@ -34,7 +34,7 @@
         <h1>
 <a id="sequelocitynet" class="anchor" href="#sequelocitynet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sequelocity.NET</h1>
 
-<p><em>Note that this project is currently in a pre-release state.</em></p>
+<p><em>Note that this project is currently in a pre-release state although it is already being used in production successfully.</em></p>
 
 <h3>
 <a id="what-is-it" class="anchor" href="#what-is-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is it?</h3>
@@ -43,24 +43,17 @@
 
 <p>It enables you to write fluent style syntax creating a more elegant and concise way of writing data access code. </p>
 
-<p>It can be used as a C# single file drop in or referenced as a DLL and found on NuGet ( NuGet release coming soon ).</p>
+<p>It can be used as a <a href="https://raw.githubusercontent.com/AmbitEnergyLabs/Sequelocity.NET/master/src/SequelocityDotNet/SequelocityDotNet.cs">C# single file drop in</a> or referenced as a DLL and found on NuGet ( NuGet release coming soon ).</p>
 
 <h3>
-<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation?</h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h3>
 
-<p>Yes, we have documentation. =)</p>
-
-<p><strong>XML Comments</strong></p>
-
-<p>All of the methods in the codebase our heavily XML commented which should give you plenty of intellisense description feel-goodness.</p>
-
-<p><strong>Wiki</strong></p>
-
-<p>We have a growing number of wiki articles that can be found here: <a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki">https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki</a></p>
-
-<p><strong>MSDN-Style Documentation</strong></p>
-
-<p>We will also soon have MSDN-style documentation to explore.</p>
+<ul>
+<li>
+<a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki">Sequelocity Wiki</a> - We have a growing number of wiki articles including an overview of the project, detailed examples, and more.</li>
+<li>XML Comments - All of the methods in the codebase our heavily XML commented which should give you plenty of intellisense description feel-goodness.</li>
+<li>API Documentation - We will also soon have MSDN-style API documentation to explore.</li>
+</ul>
 
 <h3>
 <a id="why-use-it" class="anchor" href="#why-use-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Use It?</h3>
@@ -73,7 +66,7 @@
 <li>Automatically handles all database connection opening, closing, and disposing of unneeded resources</li>
 <li>Can map results back to strongly typed objects, dynamic objects, DataSets or DataTables</li>
 <li>Can generate SQL insert statements given a strongly typed object, anonymous object, or dynamic object</li>
-<li>Is backed by over 300 tests</li>
+<li>Is backed by over 400 tests</li>
 </ul>
 
 <h3>
@@ -102,19 +95,15 @@
     <span class="pl-k">return</span> superHero;
 }</pre></div>
 
-<p>Please see the project unit tests for many more examples.</p>
+<p>Please see the <a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki/Examples">Examples</a> wiki page or explore the project unit tests for many more examples.</p>
 
 <h3>
-<a id="basic-concepts" class="anchor" href="#basic-concepts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Concepts</h3>
+<a id="the-databasecommand" class="anchor" href="#the-databasecommand" aria-hidden="true"><span class="octicon octicon-link"></span></a>The DatabaseCommand</h3>
 
-<p>Sequelocity provides two main paths for easy data access: The DatabaseCommand object and DbCommand extension methods.</p>
+<p>Sequelocity introduces the DatabaseCommand as a thin layer of abstraction upon the native Microsoft .NET Framework <a href="http://msdn.microsoft.com/en-us/library/System.Data.Common.DbCommand(v=vs.110).aspx">System.Data.Common.DbCommand</a> in order to introduce several beneficial features such as automatic connection handling, event handlers, and extension points.</p>
 
-<h4>
-<a id="databasecommand" class="anchor" href="#databasecommand" aria-hidden="true"><span class="octicon octicon-link"></span></a>DatabaseCommand</h4>
-
-<p>Sequelocity introduces one layer of abstraction upon the native .NET framework System.Data.Common.DbCommand in order to introduce several beneficial features such as automatic connection handling, event handlers, and extension points.</p>
-
-<p><strong>Automatic Connection Handling</strong></p>
+<h5>
+<a id="automatic-connection-handling" class="anchor" href="#automatic-connection-handling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Automatic Connection Handling</h5>
 
 <p>When utilizing the DatabaseCommand object, all of its execute methods automatically open and close the underlying database connection and dispose of the underlying ADO.NET DbCommand which removes the need for writing the common and repetitive boilerplate code of opening connections, closing connections, and C# using statements.</p>
 
@@ -122,44 +111,47 @@
 
 <p>Of course if you are in need to keep a connection open after issuing a command, there are optional parameters that allow you to specify that giving you complete control of the connection handling.</p>
 
-<p><strong>Event Handlers aka Interception Points aka Hooks</strong></p>
+<h5>
+<a id="event-handlers-aka-interception-points-aka-hooks" class="anchor" href="#event-handlers-aka-interception-points-aka-hooks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Event Handlers aka Interception Points aka Hooks</h5>
 
 <p>When utilizing the DatabaseCommand object, all of its execute methods will automatically invoke / call all registered event handlers before calling the database ( Pre-Invoke ), after the database has been called and the results returned ( Post-Invoke ), and upon any unhandled exceptions.</p>
 
 <p>It is very easy to register to one of these events in order to facilitate injecting your own behavior, to assist in debugging, or to enable logging queries, results, or exceptions.</p>
 
-<p><strong>Extension Points</strong></p>
+<h5>
+<a id="extension-points" class="anchor" href="#extension-points" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extension Points</h5>
 
 <p>If you take a look at the code base for Sequelocity, you will find that almost all of the behavior for the DatabaseCommand object is actually implemented as extension methods. What this means is that new behavior can be easily added by you or your team by simply implementing your own extension methods.</p>
 
 <p>This architectural decision was very much intentional and demonstrates that Sequelocity is not really a framework but a utility and helper library for helping you connect and interact with your ADO.NET supported database of choice. The DatabaseCommand object is just a very simple light-weight wrapper around the .NET framework provided DbCommand in order to enable additional functionality and features.</p>
 
-<h4>
-<a id="dbcommand-extension-methods" class="anchor" href="#dbcommand-extension-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>DbCommand Extension Methods</h4>
-
-<p>Most of the code in Sequelocity is actually just extension methods and a large portion of the behavior of the Sequelocity DatabaseCommand object simply forwards calls to the many extension methods we've created for the .NET framework provided DbCommand. This enables an alternative way of using Sequelocity as just a set of fluent extension methods for the native DbCommand object in order to reduce the repetitive boilerplate code typically required to be written when working with raw ADO.NET.</p>
-
-<p>A majority of the Sequelocity DbCommand extension methods are implemented with the method both taking in the DbCommand as an argument and returning the DbCommand as the result enabling a fluent style syntax creating a more elegant and concise way of writing data access code.</p>
+<p><em>You can visit the <a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki/DatabaseCommand-Overview">DatabaseCommand Overview</a> wiki page for a more detail on it and examples of working with the DatabaseCommand.</em></p>
 
 <h3>
 <a id="unit-tests-and-integration-tests" class="anchor" href="#unit-tests-and-integration-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unit Tests and Integration Tests</h3>
 
-<p>Sequelocity is backed by a large test suite comprising over 300 unit and integration tests. These tests serve as a contract specifying the behavior we expect out of each and every method which leads to a lot of tests which appear to be near duplicates of other tests and indeed many of the DatabaseCommand tests are 95% the same code as their DbCommand test counterparts but this is intentional and again is meant to serve as validation of expected method behavior. We hope that such a large test suite will give you confidence and 'the warm and fuzzies' knowing that many, many hours were put into writing tests that cover every inch of code in the Sequelocity code base and it is our hope that this will ensure a low number of bugs, increased quality, and the ability to add new features without breaking existing functionality.</p>
+<p>Sequelocity is backed by a large test suite comprising over 400 unit and integration tests. These tests serve as a contract specifying the behavior we expect out of each and every method which leads to a lot of tests which appear to be near duplicates of other tests and indeed many of the DatabaseCommand tests are 95% the same code as their DbCommand test counterparts but this is intentional and again is meant to serve as validation of expected method behavior. We hope that such a large test suite will give you confidence and 'the warm and fuzzies' knowing that many, many hours were put into writing tests that cover every inch of code in the Sequelocity code base and it is our hope that this will ensure a low number of bugs, increased quality, and the ability to add new features without breaking existing functionality.</p>
 
-<p>Unit Test vs Integration Test</p>
+<h5>
+<a id="unit-test-vs-integration-test" class="anchor" href="#unit-test-vs-integration-test" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unit Test vs Integration Test</h5>
 
 <ul>
 <li>We define unit tests as code that attempts to isolate a single unit, which we typically consider a method, and confirm its expected behavior attempting to not exercise any external resources. </li>
 <li>We define an integration test as basically the same thing as a unit test except the goal is to also exercise the external resources such as running the method against an actual SQLite or Sql Server database. *Note that 'integration test' usually means more than this meaning but for this project this simplified meaning helps to differentiate the two types of testing being performed.</li>
 </ul>
 
-<p>Project Breakdown:</p>
+<h5>
+<a id="test-projects-breakdown" class="anchor" href="#test-projects-breakdown" aria-hidden="true"><span class="octicon octicon-link"></span></a>Test Projects Breakdown:</h5>
 
 <ul>
-<li>SequelocityDotNet - This is the main project and contains only a single file named SequelocityDotNet.cs.</li>
-<li>SequelocityDotNet.Tests - These are unit tests as defined above, are the most abundant, and are lightning fast to run.</li>
-<li>SequelocityDotNet.Tests.SQLite - These are integration tests against an in-memory SQLite database and are lightning fast to run.</li>
-<li>SequelocityDotNet.Tests.SqlServer - These are integration tests against a Sql Server database kindly provided by AppHarbor and take about 8 seconds to run depending on your connection speed. *Note that we do not share the ConnectionString to our test Sql Server for obvious reasons so the tests won't be immediately runnable but you can simply replace the ConnectionString with your own and the tests should run just fine as all tests are self contained and will conveniently create any database objects that they need to satisfy the test.</li>
+<li>
+<a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet">SequelocityDotNet</a> - This is the main project and contains only a single file named SequelocityDotNet.cs.</li>
+<li>
+<a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests">SequelocityDotNet.Tests</a> - These are unit tests as defined above, are the most abundant, and are lightning fast to run.</li>
+<li>
+<a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests.SQLite">SequelocityDotNet.Tests.SQLite</a> - These are integration tests against an in-memory SQLite database and are lightning fast to run.</li>
+<li>
+<a href="https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests.SqlServer">SequelocityDotNet.Tests.SqlServer</a> - These are integration tests against a Sql Server database kindly provided by AppHarbor and take about 8 seconds to run depending on your connection speed. *Note that we do not share the ConnectionString to our test Sql Server for obvious reasons so the tests won't be immediately runnable but you can simply replace the ConnectionString with your own and the tests should run just fine as all tests are self contained and will conveniently create any database objects that they need to satisfy the test.</li>
 </ul>
 
 <h3>
@@ -169,7 +161,7 @@
 
 <p><strong>Database Provider Specific Implementations</strong></p>
 
-<p>Sequelocity does include a few database provider specific implementation methods listed below. If you would like to contribute additional database provider specific implementations, please feel free to do so by submitting a pull request.</p>
+<p>Sequelocity does include a few database provider specific implementation methods listed below. If you would like to contribute additional database provider specific implementations, please feel free to do so by submitting a pull request with accompanying integration tests.</p>
 
 <p>SQLite</p>
 
