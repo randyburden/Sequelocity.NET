@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Transactions;
 using NUnit.Framework;
 
 namespace SequelocityDotNet.Tests.SqlServer
@@ -770,7 +771,7 @@ public void AppendCommandText_Example()
 #region Transaction Examples
 
 [Test]
-public void Transaction_Example()
+public void BeginTransaction_Example()
 {
     const string sqlCommand1 = @"
 CREATE TABLE #Customer
@@ -806,6 +807,57 @@ INSERT INTO #Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
             if ( rowsUpdated == 2 && nextRowsUpdated == 1 )
                 transaction.Commit();
         }
+    }
+}
+
+[Test]
+public void TransactionScope_Example()
+{
+    const string sqlCommand1 = @"
+IF ( EXISTS (	SELECT	* 
+				FROM	INFORMATION_SCHEMA.TABLES 
+				WHERE	TABLE_SCHEMA = 'dbo' 
+						AND	TABLE_NAME = 'Customer' ) )
+BEGIN
+	DROP TABLE Customer
+END
+
+IF ( NOT EXISTS (	SELECT	* 
+					FROM	INFORMATION_SCHEMA.TABLES 
+					WHERE	TABLE_SCHEMA = 'dbo' 
+							AND	TABLE_NAME = 'Customer') )
+BEGIN
+	CREATE TABLE Customer
+	(
+		CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
+		FirstName       NVARCHAR(120)   NOT NULL,
+		LastName        NVARCHAR(120)   NOT NULL,
+		DateOfBirth     DATETIME        NOT NULL
+	);
+END
+
+INSERT INTO Customer VALUES ( 'Clark', 'Kent', '06/18/1938' );
+INSERT INTO Customer VALUES ( 'Bruce', 'Wayne', '05/27/1939' );
+";
+
+    const string sqlCommand2 = @"
+INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
+";
+
+    using ( var transaction = new TransactionScope() )
+    {
+        var rowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+                .SetCommandText( sqlCommand1 )
+                .ExecuteNonQuery();
+
+        var nextRowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            .SetCommandText( sqlCommand2 )
+            .ExecuteNonQuery();
+
+        Assert.That( rowsUpdated == 2 && nextRowsUpdated == 1 );
+
+        if ( rowsUpdated == 2 && nextRowsUpdated == 1 )
+            transaction.Complete();
     }
 } 
 
