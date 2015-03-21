@@ -1,13 +1,13 @@
-﻿using System.Data;
+using System.Data;
 using NUnit.Framework;
 
 namespace SequelocityDotNet.Tests.MySql.DatabaseCommandExtensionsTests
 {
     [TestFixture]
-    public class ExecuteNonQueryTests
+    public class ExecuteScalarTests
     {
         [Test]
-        public void Should_Return_The_Number_Of_Affected_Rows()
+        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set()
         {
             // Arrange
             const string sql = @"
@@ -20,16 +20,54 @@ CREATE TEMPORARY TABLE SuperHero
     PRIMARY KEY ( SuperHeroId )
 );
 
-INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Superman' );
+
+SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+        SuperHeroName
+FROM    SuperHero;
 ";
 
             // Act
-            var rowsAffected = Sequelocity.GetDatabaseCommand( "MySql" )
+            var superHeroId = Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( sql )
-                .ExecuteNonQuery();
+                .ExecuteScalar()
+                .ToLong();
 
             // Assert
-            Assert.That( rowsAffected == 1 );
+            Assert.That( superHeroId == 1 );
+        }
+
+        [Test]
+        [Description( "This tests the generic version of the ExecuteScaler method." )]
+        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set_And_Convert_It_To_The_Type_Specified()
+        {
+            // Arrange
+            const string sql = @"
+DROP TEMPORARY TABLE IF EXISTS SuperHero;
+
+CREATE TEMPORARY TABLE SuperHero
+(
+    SuperHeroId     INT             NOT NULL    AUTO_INCREMENT,
+    SuperHeroName	VARCHAR(120)    NOT NULL,
+    PRIMARY KEY ( SuperHeroId )
+);
+
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Superman' );
+
+SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+        SuperHeroName
+FROM    SuperHero;
+";
+
+            // Act
+            var superHeroId = Sequelocity.GetDatabaseCommand( "MySql" )
+                .SetCommandText( sql )
+                .ExecuteScalar<long>(); // Generic version of the ExecuteScalar method
+
+            // Assert
+            Assert.That( superHeroId == 1 );
         }
 
         [Test]
@@ -46,13 +84,18 @@ CREATE TEMPORARY TABLE SuperHero
     PRIMARY KEY ( SuperHeroId )
 );
 
-INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Superman' );
+
+SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+        SuperHeroName
+FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteNonQuery();
+            databaseCommand.ExecuteScalar();
 
             // Assert
             Assert.IsNull( databaseCommand.DbCommand );
@@ -72,13 +115,18 @@ CREATE TEMPORARY TABLE SuperHero
     PRIMARY KEY ( SuperHeroId )
 );
 
-INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Superman' );
+
+SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+        SuperHeroName
+FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( sql );
 
             // Act
-            var rowsAffected = databaseCommand.ExecuteNonQuery( true );
+            databaseCommand.ExecuteScalar( true );
 
             // Assert
             Assert.That( databaseCommand.DbCommand.Connection.State == ConnectionState.Open );
@@ -96,9 +144,9 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( "SELECT 1" )
-                .ExecuteNonQuery();
+                .ExecuteScalar();
 
             // Assert
             Assert.IsTrue( wasPreExecuteEventHandlerCalled );
@@ -113,9 +161,9 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( "SELECT 1" )
-                .ExecuteNonQuery();
+                .ExecuteScalar();
 
             // Assert
             Assert.IsTrue( wasPostExecuteEventHandlerCalled );
@@ -133,9 +181,9 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( "asdf;lkj" )
-                .ExecuteNonQuery();
+                .ExecuteScalar();
 
             // Assert
             Assert.Throws<global::MySql.Data.MySqlClient.MySqlException>( action );

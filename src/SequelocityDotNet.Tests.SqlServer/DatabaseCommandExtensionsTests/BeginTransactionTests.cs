@@ -261,7 +261,7 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 
                 rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
                         .SetCommandText( "SELECT COUNT(*) FROM Customer" )
-                        .ExecuteScalar<int>( keepConnectionOpen: true );
+                        .ExecuteScalar<int>();
 
                 Assert.That( rowCount == 3 );
 
@@ -340,7 +340,7 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 
                 rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
                         .SetCommandText( "SELECT COUNT(*) FROM Customer" )
-                        .ExecuteScalar<int>( keepConnectionOpen: true );
+                        .ExecuteScalar<int>();
 
                 Assert.That( rowCount == 3 );
 

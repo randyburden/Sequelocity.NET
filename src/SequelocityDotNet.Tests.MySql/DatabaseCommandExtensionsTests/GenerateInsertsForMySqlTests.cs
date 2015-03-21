@@ -5,10 +5,10 @@ using System.Dynamic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace SequelocityDotNet.Tests.SqlServer.DatabaseCommandExtensionsTests
+namespace SequelocityDotNet.Tests.MySql.DatabaseCommandExtensionsTests
 {
 	[TestFixture]
-	public class GenerateInsertsForSqlServerTests
+	public class GenerateInsertsForMySqlTests
 	{
 		public struct Customer
 		{
@@ -22,39 +22,24 @@ namespace SequelocityDotNet.Tests.SqlServer.DatabaseCommandExtensionsTests
 		public void Should_Return_The_Last_Inserted_Ids()
 		{
 			// Arrange
-			const string sql = @"
-IF ( EXISTS (	SELECT	* 
-				FROM	INFORMATION_SCHEMA.TABLES 
-				WHERE	TABLE_SCHEMA = 'dbo' 
-						AND	TABLE_NAME = 'Customer' ) )
-BEGIN
+            const string createSchemaSql = @"
+DROP TABLE IF EXISTS Customer;
 
-	DROP TABLE Customer
-
-END
-
-IF ( NOT EXISTS (	SELECT	* 
-					FROM	INFORMATION_SCHEMA.TABLES 
-					WHERE	TABLE_SCHEMA = 'dbo' 
-							AND	TABLE_NAME = 'Customer') )
-BEGIN
-
-	CREATE TABLE Customer
-	(
-		CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
-		FirstName       NVARCHAR(120)   NOT NULL,
-		LastName        NVARCHAR(120)   NOT NULL,
-		DateOfBirth     DATETIME        NOT NULL
-	);
-
-END
+CREATE TABLE IF NOT EXISTS Customer
+(
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
+    FirstName       NVARCHAR(120)   NOT NULL,
+    LastName        NVARCHAR(120)   NOT NULL,
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
+);
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
 
 			new DatabaseCommand( dbConnection )
-				.SetCommandText( sql )
-				.ExecuteNonQuery( true );
+                .SetCommandText( createSchemaSql )
+				.ExecuteNonQuery();
 
 			var customer1 = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 			var customer2 = new Customer { FirstName = "Bruce", LastName = "Wayne", DateOfBirth = DateTime.Parse( "05/27/1939" ) };
@@ -63,7 +48,7 @@ END
 			
 			// Act
 			var customerIds = new DatabaseCommand( dbConnection )
-				.GenerateInsertsForSqlServer( list )
+				.GenerateInsertsForMySql( list )
 				.ExecuteToList<long>();
 
 			// Assert
@@ -77,39 +62,24 @@ END
 		public void Should_Handle_Generating_Inserts_For_A_Strongly_Typed_Object()
 		{
 			// Arrange
-			const string createSchemaSql = @"
-IF ( EXISTS (	SELECT	* 
-				FROM	INFORMATION_SCHEMA.TABLES 
-				WHERE	TABLE_SCHEMA = 'dbo' 
-						AND	TABLE_NAME = 'Customer' ) )
-BEGIN
+            const string createSchemaSql = @"
+DROP TABLE IF EXISTS Customer;
 
-	DROP TABLE Customer
-
-END
-
-IF ( NOT EXISTS (	SELECT	* 
-					FROM	INFORMATION_SCHEMA.TABLES 
-					WHERE	TABLE_SCHEMA = 'dbo' 
-							AND	TABLE_NAME = 'Customer') )
-BEGIN
-
-	CREATE TABLE Customer
-	(
-		CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
-		FirstName       NVARCHAR(120)   NOT NULL,
-		LastName        NVARCHAR(120)   NOT NULL,
-		DateOfBirth     DATETIME        NOT NULL
-	);
-
-END
+CREATE TABLE IF NOT EXISTS Customer
+(
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
+    FirstName       NVARCHAR(120)   NOT NULL,
+    LastName        NVARCHAR(120)   NOT NULL,
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
+);
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )
-				.ExecuteNonQuery( true );
+				.ExecuteNonQuery();
 
 			var customer1 = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 			var customer2 = new Customer { FirstName = "Bruce", LastName = "Wayne", DateOfBirth = DateTime.Parse( "05/27/1939" ) };
@@ -118,8 +88,8 @@ END
 
 			// Act
 			var customerIds = new DatabaseCommand( dbConnection )
-				.GenerateInsertsForSqlServer( list )
-				.ExecuteToList<long>( true );
+				.GenerateInsertsForMySql( list )
+				.ExecuteToList<int>();
 
 			const string selectCustomerQuery = @"
 SELECT  CustomerId,
@@ -132,7 +102,7 @@ WHERE   CustomerId IN ( @CustomerIds );
 
 			var customers = new DatabaseCommand( dbConnection )
 				.SetCommandText( selectCustomerQuery )
-				.AddParameters( "@CustomerIds", customerIds, DbType.Int64 )
+				.AddParameters( "@CustomerIds", customerIds, DbType.Int32 )
 				.ExecuteToList<Customer>()
 				.OrderBy( x => x.CustomerId )
 				.ToList();
@@ -160,39 +130,24 @@ WHERE   CustomerId IN ( @CustomerIds );
 		public void Should_Be_Able_To_Specify_The_Table_Name()
 		{
 			// Arrange
-			const string sql = @"
-IF ( EXISTS (	SELECT	* 
-				FROM	INFORMATION_SCHEMA.TABLES 
-				WHERE	TABLE_SCHEMA = 'dbo' 
-						AND	TABLE_NAME = 'Person' ) )
-BEGIN
+            const string createSchemaSql = @"
+DROP TABLE IF EXISTS Person;
 
-	DROP TABLE Person
-
-END
-
-IF ( NOT EXISTS (	SELECT	* 
-					FROM	INFORMATION_SCHEMA.TABLES 
-					WHERE	TABLE_SCHEMA = 'dbo' 
-							AND	TABLE_NAME = 'Person') )
-BEGIN
-
-	CREATE TABLE Person
-	(
-		CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
-		FirstName       NVARCHAR(120)   NOT NULL,
-		LastName        NVARCHAR(120)   NOT NULL,
-		DateOfBirth     DATETIME        NOT NULL
-	);
-
-END
+CREATE TABLE IF NOT EXISTS Person
+(
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
+    FirstName       NVARCHAR(120)   NOT NULL,
+    LastName        NVARCHAR(120)   NOT NULL,
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
+);
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
 
 			new DatabaseCommand( dbConnection )
-				.SetCommandText( sql )
-				.ExecuteNonQuery( true );
+                .SetCommandText( createSchemaSql )
+				.ExecuteNonQuery();
 
 			var customer1 = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 			var customer2 = new Customer { FirstName = "Bruce", LastName = "Wayne", DateOfBirth = DateTime.Parse( "05/27/1939" ) };
@@ -201,8 +156,8 @@ END
 
 			// Act
 			var numberOfAffectedRecords = new DatabaseCommand( dbConnection )
-				.GenerateInsertsForSqlServer( list, "[Person]" ) // Specifying a table name of Person
-				.ExecuteNonQuery( true );
+				.GenerateInsertsForMySql( list, "Person" ) // Specifying a table name of Person
+				.ExecuteNonQuery();
 
 			// Assert
 			Assert.That( numberOfAffectedRecords == list.Count );
@@ -212,39 +167,24 @@ END
 		public void Should_Throw_An_Exception_When_Passing_An_Anonymous_Object_And_Not_Specifying_A_TableName()
 		{
 			// Arrange
-			const string sql = @"
-IF ( EXISTS (	SELECT	* 
-				FROM	INFORMATION_SCHEMA.TABLES 
-				WHERE	TABLE_SCHEMA = 'dbo' 
-						AND	TABLE_NAME = 'Person' ) )
-BEGIN
+            const string createSchemaSql = @"
+DROP TABLE IF EXISTS Person;
 
-	DROP TABLE Person
-
-END
-
-IF ( NOT EXISTS (	SELECT	* 
-					FROM	INFORMATION_SCHEMA.TABLES 
-					WHERE	TABLE_SCHEMA = 'dbo' 
-							AND	TABLE_NAME = 'Person') )
-BEGIN
-
-	CREATE TABLE Person
-	(
-		CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
-		FirstName       NVARCHAR(120)   NOT NULL,
-		LastName        NVARCHAR(120)   NOT NULL,
-		DateOfBirth     DATETIME        NOT NULL
-	);
-
-END
+CREATE TABLE IF NOT EXISTS Person
+(
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
+    FirstName       NVARCHAR(120)   NOT NULL,
+    LastName        NVARCHAR(120)   NOT NULL,
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
+);
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
 
 			new DatabaseCommand( dbConnection )
-				.SetCommandText( sql )
-				.ExecuteNonQuery( true );
+                .SetCommandText( createSchemaSql )
+				.ExecuteNonQuery();
 
 			var customer1 = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 			var customer2 = new { FirstName = "Bruce", LastName = "Wayne", DateOfBirth = DateTime.Parse( "05/27/1939" ) };
@@ -253,8 +193,8 @@ END
 
 			// Act
 			TestDelegate action = () => new DatabaseCommand( dbConnection )
-                .GenerateInsertsForSqlServer( list )
-				.ExecuteScalar( true )
+                .GenerateInsertsForMySql( list )
+				.ExecuteScalar()
 				.ToInt();
 
 			// Assert
@@ -266,39 +206,24 @@ END
 		public void Should_Handle_Generating_Inserts_For_An_Anonymous_Object()
 		{
 			// Arrange
-			const string createSchemaSql = @"
-IF ( EXISTS (	SELECT	* 
-				FROM	INFORMATION_SCHEMA.TABLES 
-				WHERE	TABLE_SCHEMA = 'dbo' 
-						AND	TABLE_NAME = 'Customer' ) )
-BEGIN
+            const string createSchemaSql = @"
+DROP TABLE IF EXISTS Customer;
 
-	DROP TABLE Customer
-
-END
-
-IF ( NOT EXISTS (	SELECT	* 
-					FROM	INFORMATION_SCHEMA.TABLES 
-					WHERE	TABLE_SCHEMA = 'dbo' 
-							AND	TABLE_NAME = 'Customer') )
-BEGIN
-
-	CREATE TABLE Customer
-	(
-		CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
-		FirstName       NVARCHAR(120)   NOT NULL,
-		LastName        NVARCHAR(120)   NOT NULL,
-		DateOfBirth     DATETIME        NOT NULL
-	);
-
-END
+CREATE TABLE IF NOT EXISTS Customer
+(
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
+    FirstName       NVARCHAR(120)   NOT NULL,
+    LastName        NVARCHAR(120)   NOT NULL,
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
+);
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )
-				.ExecuteNonQuery( true );
+				.ExecuteNonQuery();
 
 			var customer1 = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 			var customer2 = new { FirstName = "Bruce", LastName = "Wayne", DateOfBirth = DateTime.Parse( "05/27/1939" ) };
@@ -307,8 +232,8 @@ END
 
 			// Act
 			var customerIds = new DatabaseCommand( dbConnection )
-				.GenerateInsertsForSqlServer( list, "Customer" )
-				.ExecuteToList<long>( true );
+				.GenerateInsertsForMySql( list, "Customer" )
+				.ExecuteToList<long>();
 
 			const string selectCustomerQuery = @"
 SELECT  CustomerId,
@@ -349,39 +274,24 @@ WHERE   CustomerId IN ( @CustomerIds );
 		public void Should_Handle_Generating_Inserts_For_A_Dynamic_Object()
 		{
 			// Arrange
-			const string createSchemaSql = @"
-IF ( EXISTS (	SELECT	* 
-				FROM	INFORMATION_SCHEMA.TABLES 
-				WHERE	TABLE_SCHEMA = 'dbo' 
-						AND	TABLE_NAME = 'Customer' ) )
-BEGIN
+            const string createSchemaSql = @"
+DROP TABLE IF EXISTS Customer;
 
-	DROP TABLE Customer
-
-END
-
-IF ( NOT EXISTS (	SELECT	* 
-					FROM	INFORMATION_SCHEMA.TABLES 
-					WHERE	TABLE_SCHEMA = 'dbo' 
-							AND	TABLE_NAME = 'Customer') )
-BEGIN
-
-	CREATE TABLE Customer
-	(
-		CustomerId      INT             NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
-		FirstName       NVARCHAR(120)   NOT NULL,
-		LastName        NVARCHAR(120)   NOT NULL,
-		DateOfBirth     DATETIME        NOT NULL
-	);
-
-END
+CREATE TABLE IF NOT EXISTS Customer
+(
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
+    FirstName       NVARCHAR(120)   NOT NULL,
+    LastName        NVARCHAR(120)   NOT NULL,
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
+);
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )
-				.ExecuteNonQuery( true );
+				.ExecuteNonQuery();
 
 			dynamic customer1 = new ExpandoObject();
 			customer1.FirstName = "Clark";
@@ -402,8 +312,8 @@ END
 
 			// Act
 			var customerIds = new DatabaseCommand( dbConnection )
-				.GenerateInsertsForSqlServer( list, "Customer" )
-				.ExecuteToList<long>( true );
+				.GenerateInsertsForMySql( list, "Customer" )
+				.ExecuteToList<long>();
 
 			const string selectCustomerQuery = @"
 SELECT  CustomerId,

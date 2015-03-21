@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Diagnostics;
 using NUnit.Framework;
 
-namespace SequelocityDotNet.Tests.SqlServer.DbCommandExtensionsTests
+namespace SequelocityDotNet.Tests.MySql.DbCommandExtensionsTests
 {
     [TestFixture]
     public class GetDebugCommandTextTests
@@ -21,17 +21,20 @@ namespace SequelocityDotNet.Tests.SqlServer.DbCommandExtensionsTests
         {
             // Arrange
             const string sql = @"
-CREATE TABLE #Customer
+DROP TEMPORARY TABLE IF EXISTS Customer;
+
+CREATE TEMPORARY TABLE Customer
 (
-    CustomerId      INT         NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
     FirstName       NVARCHAR(120)   NOT NULL,
     LastName        NVARCHAR(120)   NOT NULL,
-    DateOfBirth     DATETIME        NOT NULL
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
 );
 ";
-            string connectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings["MySql"].ConnectionString;
 
-            var dbConnection = Sequelocity.CreateDbConnection( connectionString, "System.Data.SqlClient" );
+            var dbConnection = Sequelocity.CreateDbConnection( connectionString, "MySql.Data.MySqlClient" );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( sql )
@@ -41,8 +44,8 @@ CREATE TABLE #Customer
             var customer2 = new Customer { FirstName = "Bruce", LastName = "Wayne", DateOfBirth = DateTime.Parse( "05/27/1939" ) };
 
             var databaseCommand = new DatabaseCommand( dbConnection )
-                .GenerateInsertForSqlServer( customer )
-                .GenerateInsertForSqlServer( customer2 );
+                .GenerateInsertForMySql( customer )
+                .GenerateInsertForMySql( customer2 );
 
             // Act
             var debugCommandText = databaseCommand.DbCommand.GetDebugCommandText();
@@ -59,17 +62,20 @@ CREATE TABLE #Customer
         {
             // Arrange
             const string sql = @"
-CREATE TABLE #Customer
+DROP TEMPORARY TABLE IF EXISTS Customer;
+
+CREATE TEMPORARY TABLE Customer
 (
-    CustomerId      INT         NOT NULL    IDENTITY(1,1)   PRIMARY KEY,
+    CustomerId      INT             NOT NULL    AUTO_INCREMENT,
     FirstName       NVARCHAR(120)   NOT NULL,
     LastName        NVARCHAR(120)   NOT NULL,
-    DateOfBirth     DATETIME        NOT NULL
+    DateOfBirth     DATETIME        NOT NULL,
+    PRIMARY KEY ( CustomerId )
 );
 ";
-            string connectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings["MySql"].ConnectionString;
 
-            var dbConnection = Sequelocity.CreateDbConnection( connectionString, "System.Data.SqlClient" );
+            var dbConnection = Sequelocity.CreateDbConnection( connectionString, "MySql.Data.MySqlClient" );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( sql )
@@ -79,8 +85,8 @@ CREATE TABLE #Customer
             var customer2 = new Customer { FirstName = "Bruce", LastName = "Wayne", DateOfBirth = DateTime.Parse( "05/27/1939" ) };
 
             var databaseCommand = new DatabaseCommand( dbConnection )
-                .GenerateInsertForSqlServer( customer )
-                .GenerateInsertForSqlServer( customer2 );
+                .GenerateInsertForMySql( customer )
+                .GenerateInsertForMySql( customer2 );
 
             // Act
 

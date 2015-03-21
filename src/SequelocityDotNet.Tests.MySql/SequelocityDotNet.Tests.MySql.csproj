@@ -37,6 +37,7 @@
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,7 +48,22 @@
   <ItemGroup>
     <Compile Include="DatabaseCommandExtensionsTests\BeginTransactionTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteNonQueryTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteReaderTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteScalarTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataSetTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataTableTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDynamicListTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDynamicObjectTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToListTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToMapTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToObjectTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertForMySqlTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertsForMySqlTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\SetTransactionTests.cs" />
+    <Compile Include="DbCommandExtensionsTests\GetDebugCommandTextTests.cs" />
+    <Compile Include="SequelocityTests\CreateDbConnectionTests.cs" />
+    <Compile Include="SequelocityTests\GetDatabaseCommandForMySqlTests.cs" />
+    <Compile Include="SequelocityTests\GetDatabaseCommandTests.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

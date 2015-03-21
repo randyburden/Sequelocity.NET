@@ -78,7 +78,7 @@ namespace SequelocityDotNet.Tests.DbCommandExtensionsTests
             Trace.WriteLine( dbCommand.CommandText );
 
             // Assert
-            Assert.That( dbCommand.CommandText.Contains( "[CustomerWithFields]" ) );
+            Assert.That( dbCommand.CommandText.Contains( "CustomerWithFields" ) );
         }
 
         [Test]
@@ -228,6 +228,142 @@ namespace SequelocityDotNet.Tests.DbCommandExtensionsTests
             Assert.NotNull( dbCommand.CommandText );
             Assert.That( dbCommand.CommandText.Contains( "INSERT" ) );
         }
+
+        #region Escaping Tests
+
+        [Test]
+        public void Should_Not_Escape_The_Table_Name_By_Default()
+        {
+            // Arrange
+            var customer = new CustomerWithFields { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            dbCommand = dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});" );
+
+            // Visual Assertion
+            Trace.WriteLine( dbCommand.CommandText );
+
+            // Assert
+            Assert.That( dbCommand.CommandText.Contains( "CustomerWithFields" ) );
+        }
+
+        [Test]
+        public void Can_Escape_The_Table_Name_With_Square_Brackets()
+        {
+            // Arrange
+            var customer = new CustomerWithFields { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            dbCommand = dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});", null, DbCommandExtensions.KeywordEscapeMethod.SquareBracket );
+
+            // Visual Assertion
+            Trace.WriteLine( dbCommand.CommandText );
+
+            // Assert
+            Assert.That( dbCommand.CommandText.Contains( "[CustomerWithFields]" ) );
+        }
+
+        [Test]
+        public void Can_Escape_The_Table_Name_With_Backticks()
+        {
+            // Arrange
+            var customer = new CustomerWithFields { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            dbCommand = dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});", null, DbCommandExtensions.KeywordEscapeMethod.Backtick );
+
+            // Visual Assertion
+            Trace.WriteLine( dbCommand.CommandText );
+
+            // Assert
+            Assert.That( dbCommand.CommandText.Contains( "`CustomerWithFields`" ) );
+        }
+
+        [Test]
+        public void Can_Escape_The_Table_Name_With_Double_Quotes()
+        {
+            // Arrange
+            var customer = new CustomerWithFields { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            dbCommand = dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});", null, DbCommandExtensions.KeywordEscapeMethod.DoubleQuote );
+
+            // Visual Assertion
+            Trace.WriteLine( dbCommand.CommandText );
+
+            // Assert
+            Assert.That( dbCommand.CommandText.Contains( "\"CustomerWithFields\"" ) );
+        }
+
+        [Test]
+        public void Can_Escape_The_Column_Names_With_Square_Brackets()
+        {
+            // Arrange
+            var customer = new CustomerWithFields { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            dbCommand = dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});", null, DbCommandExtensions.KeywordEscapeMethod.SquareBracket );
+
+            // Visual Assertion
+            Trace.WriteLine( dbCommand.CommandText );
+
+            // Assert
+            Assert.That( dbCommand.CommandText.Contains( "[FirstName]" ) );
+            Assert.That( dbCommand.CommandText.Contains( "[LastName]" ) );
+            Assert.That( dbCommand.CommandText.Contains( "[DateOfBirth]" ) );
+        }
+
+        [Test]
+        public void Can_Escape_The_Column_Names_Name_With_Backticks()
+        {
+            // Arrange
+            var customer = new CustomerWithFields { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            dbCommand = dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});", null, DbCommandExtensions.KeywordEscapeMethod.Backtick );
+
+            // Visual Assertion
+            Trace.WriteLine( dbCommand.CommandText );
+
+            // Assert
+            Assert.That( dbCommand.CommandText.Contains( "`FirstName`" ) );
+            Assert.That( dbCommand.CommandText.Contains( "`LastName`" ) );
+            Assert.That( dbCommand.CommandText.Contains( "`DateOfBirth`" ) );
+        }
+
+        [Test]
+        public void Can_Escape_The_Column_Names_With_Double_Quotes()
+        {
+            // Arrange
+            var customer = new CustomerWithFields { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
+
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            // Act
+            dbCommand = dbCommand.GenerateInsertCommand( customer, "INSERT INTO {0} ({1}) VALUES({2});", null, DbCommandExtensions.KeywordEscapeMethod.DoubleQuote );
+
+            // Visual Assertion
+            Trace.WriteLine( dbCommand.CommandText );
+
+            // Assert
+            Assert.That( dbCommand.CommandText.Contains( "\"FirstName\"" ) );
+            Assert.That( dbCommand.CommandText.Contains( "\"LastName\"" ) );
+            Assert.That( dbCommand.CommandText.Contains( "\"DateOfBirth\"" ) );
+        }
+
+        #endregion Escaping Tests
 
         public class ClassWithNoFields
         {

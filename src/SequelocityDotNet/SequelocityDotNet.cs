@@ -1,5 +1,5 @@
 ﻿/*
-    Sequelocity.NET v0.2.0
+    Sequelocity.NET v0.3.0
 
     Sequelocity.NET is a simple data access library for the Microsoft .NET
     Framework providing lightweight ADO.NET wrapper, object mapper, and helper
@@ -154,6 +154,30 @@ namespace SequelocityDotNet
         public static DatabaseCommand GetDatabaseCommandForSQLite( string connectionStringOrName = null )
         {
             return GetDatabaseCommand( connectionStringOrName, "System.Data.SQLite" );
+        }
+
+        /// <summary>Gets a <see cref="DatabaseCommand" /> that interacts with a MySQL database.</summary>
+        /// <param name="connectionStringOrName">Connection string or connection string name.</param>
+        /// <returns>A new <see cref="DatabaseCommand" /> instance.</returns>
+        /// <exception cref="ConnectionStringNotFoundException">
+        /// Thrown when no ConnectionString could be found. A valid ConnectionString or Connection String Name must be supplied in
+        /// the 'connectionStringOrName' parameter or by setting a default in either the
+        /// 'DatabaseCommand.ConfigurationSettings.Default.ConnectionStringName' or
+        /// 'DatabaseCommand.ConfigurationSettings.Default.ConnectionString' properties.
+        /// </exception>
+        /// <exception cref="DbProviderFactoryNotFoundException">
+        /// Thrown when no DbProviderFactory could be found. A DbProviderFactory invariant name must be supplied in the connection
+        /// string settings 'providerName' attribute in the applications config file, in the 'dbProviderFactoryInvariantName'
+        /// parameter, or by setting a default in the
+        /// 'DatabaseCommand.ConfigurationSettings.Default.DbProviderFactoryInvariantName' property.
+        /// </exception>
+        /// <exception cref="Exception">
+        /// An unknown error occurred creating a connection as the call to DbProviderFactory.CreateConnection() returned null.
+        /// </exception>
+        // ReSharper disable once InconsistentNaming
+        public static DatabaseCommand GetDatabaseCommandForMySql( string connectionStringOrName = null )
+        {
+            return GetDatabaseCommand( connectionStringOrName, "MySql.Data.MySqlClient" );
         }
 
         /// <summary>Attempts to create a <see cref="DbConnection" /> using several strategies.</summary>
@@ -387,6 +411,7 @@ namespace SequelocityDotNet
         }
 
         /// <summary>Thrown when a ConnectionString could not be found.</summary>
+        [Serializable]
         public class ConnectionStringNotFoundException : Exception
         {
             /// <summary>
@@ -400,6 +425,7 @@ namespace SequelocityDotNet
         }
 
         /// <summary>Thrown when a DbProviderFactory could not be found.</summary>
+        [Serializable]
         public class DbProviderFactoryNotFoundException : Exception
         {
             /// <summary>
@@ -785,6 +811,54 @@ namespace SequelocityDotNet
             }
 
             return new DatabaseCommand( dbCommand );
+        }
+
+        /// <summary>
+        /// Generates a parameterized MySQL INSERT statement from the given object and adds it to the
+        /// <see cref="DatabaseCommand" />.
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using MySQL's SELECT LAST_INSERT_ID() function.
+        /// </para>
+        /// </summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="obj">Object to generate the SQL INSERT statement from.</param>
+        /// <param name="tableName">Optional table name to insert into. If none is supplied, it will use the type name.</param>
+        /// <returns>The given <see cref="DatabaseCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DatabaseCommand GenerateInsertForMySql( this DatabaseCommand databaseCommand, object obj, string tableName = null )
+        {
+            databaseCommand.DbCommand.GenerateInsertForMySql( obj, tableName );
+
+            return databaseCommand;
+        }
+
+        /// <summary>
+        /// Generates a list of concatenated parameterized MySQL INSERT statements from the given list of objects and adds it to
+        /// the <see cref="DatabaseCommand" />.
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using MySQL's SELECT LAST_INSERT_ID() function.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">Type of the objects in the list.</typeparam>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="listOfObjects">List of objects to generate the SQL INSERT statements from.</param>
+        /// <param name="tableName">
+        /// Optional table name to insert into. If none is supplied, it will use the type name. Note that this parameter is
+        /// required when passing in an anonymous object or an <see cref="ArgumentNullException" /> will be thrown.
+        /// </param>
+        /// <returns>The given <see cref="DatabaseCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DatabaseCommand GenerateInsertsForMySql<T>( this DatabaseCommand databaseCommand, List<T> listOfObjects, string tableName = null )
+        {
+            databaseCommand.DbCommand.GenerateInsertsForMySql( listOfObjects, tableName );
+
+            return databaseCommand;
         }
 
         /// <summary>
@@ -1445,6 +1519,7 @@ namespace SequelocityDotNet
         }
 
         /// <summary>Thrown when an exception occurs while converting a value from one type to another.</summary>
+        [Serializable]
         public class TypeConversionException : Exception
         {
             /// <summary>Instantiates a new <see cref="TypeConversionException" /> with a specified error message.</summary>
@@ -1580,6 +1655,7 @@ namespace SequelocityDotNet
         }
 
         /// <summary>Exception thrown when setting a fields value.</summary>
+        [Serializable]
         public class FieldSetValueException : Exception
         {
             /// <summary>Instantiates a new <see cref="FieldSetValueException" /> with a specified error message.</summary>
@@ -1595,6 +1671,7 @@ namespace SequelocityDotNet
         }
 
         /// <summary>Exception thrown when setting a properties value.</summary>
+        [Serializable]
         public class PropertySetValueException : Exception
         {
             /// <summary>Instantiates a new <see cref="PropertySetValueException" /> with a specified error message.</summary>
@@ -2088,6 +2165,68 @@ namespace SequelocityDotNet
         }
 
         /// <summary>
+        /// Generates a parameterized MySQL INSERT statement from the given object and adds it to the <see cref="DbCommand" />
+        /// .
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using MySQL's SELECT LAST_INSERT_ID() function.
+        /// </para>
+        /// </summary>
+        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
+        /// <param name="obj">Object to generate the SQL INSERT statement from.</param>
+        /// <param name="tableName">
+        /// Optional table name to insert into. If none is supplied, it will use the type name. Note that this parameter is
+        /// required when passing in an anonymous object or an <see cref="ArgumentNullException" /> will be thrown.
+        /// </param>
+        /// <returns>The given <see cref="DbCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DbCommand GenerateInsertForMySql( this DbCommand dbCommand, object obj, string tableName = null )
+        {
+            const string mySqlInsertStatementTemplate = @"
+INSERT INTO {0}
+({1}
+)
+VALUES
+({2}
+);
+SELECT LAST_INSERT_ID() AS LastInsertedId;
+"; // Intentional line break for readability of multiple inserts
+
+            return dbCommand.GenerateInsertCommand( obj, mySqlInsertStatementTemplate, tableName, KeywordEscapeMethod.Backtick );
+        }
+
+        /// <summary>
+        /// Generates a list of concatenated parameterized MySQL INSERT statements from the given list of objects and adds it to
+        /// the <see cref="DbCommand" />.
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using MySQL's SELECT LAST_INSERT_ID() function.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">Type of the objects in the list.</typeparam>
+        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
+        /// <param name="listOfObjects">List of objects to generate the SQL INSERT statements from.</param>
+        /// <param name="tableName">
+        /// Optional table name to insert into. If none is supplied, it will use the type name. Note that this parameter is
+        /// required when passing in an anonymous object or an <see cref="ArgumentNullException" /> will be thrown.
+        /// </param>
+        /// <returns>The given <see cref="DbCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DbCommand GenerateInsertsForMySql<T>( this DbCommand dbCommand, List<T> listOfObjects, string tableName = null )
+        {
+            foreach( T obj in listOfObjects )
+            {
+                dbCommand.GenerateInsertForMySql( obj, tableName );
+            }
+
+            return dbCommand;
+        }
+
+        /// <summary>
         /// Generates a parameterized SQLite INSERT statement from the given object and adds it to the <see cref="DbCommand" />
         /// .
         /// <para>
@@ -2118,7 +2257,7 @@ VALUES
 SELECT last_insert_rowid() AS [LastInsertedId];
 "; // Intentional line break for readability of multiple inserts
 
-            return dbCommand.GenerateInsertCommand( obj, sqliteInsertStatementTemplate, tableName );
+            return dbCommand.GenerateInsertCommand( obj, sqliteInsertStatementTemplate, tableName, KeywordEscapeMethod.SquareBracket );
         }
 
         /// <summary>
@@ -2181,7 +2320,7 @@ VALUES
 SELECT SCOPE_IDENTITY() AS [LastInsertedId];
 "; // Intentional line break for readability of multiple inserts
 
-            return dbCommand.GenerateInsertCommand( obj, sqlServerInsertStatementTemplate, tableName );
+            return dbCommand.GenerateInsertCommand( obj, sqlServerInsertStatementTemplate, tableName, KeywordEscapeMethod.SquareBracket );
         }
 
         /// <summary>
@@ -2214,6 +2353,21 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
         }
 
         /// <summary>
+        /// The method used for escaping keywords.
+        /// </summary>
+        public enum KeywordEscapeMethod
+        {
+            /// <summary>No escape method is used.</summary>
+            None = 0,
+            /// <summary>Keywords are enclosed in square brackets. Used by SQL Server, SQLite.</summary>
+            SquareBracket = 1,
+            /// <summary>Keywords are enclosed in double quotes. Used by PostgreSQL, SQLite.</summary>
+            DoubleQuote = 2,
+            /// <summary>Keywords are enclosed in backticks aka grave accents (ASCII code 96). Used by MySQL, SQLite.</summary>
+            Backtick = 3
+        }
+
+        /// <summary>
         /// Generates a parameterized SQL Server INSERT statement from the given object and adds it to the
         /// <see cref="DbCommand" />.
         /// </summary>
@@ -2228,12 +2382,13 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
         /// Optional table name to insert into. If none is supplied, it will use the type name. Note that this parameter is
         /// required when passing in an anonymous object or an <see cref="ArgumentNullException" /> will be thrown.
         /// </param>
+        /// <param name="keywordEscapeMethod">The method used for escaping keywords.</param>
         /// <returns>The given <see cref="DbCommand" /> instance.</returns>
         /// <exception cref="ArgumentNullException">
         /// The value of 'tableName' cannot be null when the object passed is an anonymous
         /// type.
         /// </exception>
-        public static DbCommand GenerateInsertCommand( this DbCommand dbCommand, object obj, string sqlInsertStatementTemplate, string tableName = null )
+        public static DbCommand GenerateInsertCommand( this DbCommand dbCommand, object obj, string sqlInsertStatementTemplate, string tableName = null, KeywordEscapeMethod keywordEscapeMethod = KeywordEscapeMethod.None )
         {
             if ( obj == null )
             {
@@ -2260,9 +2415,29 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
                 throw new ArgumentNullException( "tableName", "The 'tableName' parameter must be provided when the object supplied is an anonymous type." );
             }
 
+            string preKeywordEscapeCharacter = "";
+
+            string postKeywordEscapeCharacter = "";
+
+            switch ( keywordEscapeMethod )
+            {
+                case KeywordEscapeMethod.SquareBracket:
+                    preKeywordEscapeCharacter = "[";
+                    postKeywordEscapeCharacter = "]";
+                    break;
+                case KeywordEscapeMethod.DoubleQuote:
+                    preKeywordEscapeCharacter = "\"";
+                    postKeywordEscapeCharacter = "\"";
+                    break;
+                case KeywordEscapeMethod.Backtick:
+                    preKeywordEscapeCharacter = "`";
+                    postKeywordEscapeCharacter = "`";
+                    break;
+            }
+
             if ( tableName == null )
             {
-                tableName = "[" + obj.GetType().Name + "]";
+                tableName = preKeywordEscapeCharacter + obj.GetType().Name + postKeywordEscapeCharacter;
             }
 
             string linePrefix = Environment.NewLine + "\t";
@@ -2278,7 +2453,7 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
                 if ( nameAndValue.Value == null )
                     continue;
 
-                columns += linePrefix + "[" + nameAndValue.Key + "],";
+                columns += linePrefix + preKeywordEscapeCharacter + nameAndValue.Key + postKeywordEscapeCharacter + ",";
 
                 // Note that we are appending the ordinal parameter position as a suffix to the parameter name in order to create
                 // some uniqueness for each parameter name so that this method can be called repeatedly as well as to aid in debugging.

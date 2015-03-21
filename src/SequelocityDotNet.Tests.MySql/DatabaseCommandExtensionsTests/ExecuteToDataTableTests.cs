@@ -1,13 +1,13 @@
-﻿using System.Data;
+using System.Data;
 using NUnit.Framework;
 
 namespace SequelocityDotNet.Tests.MySql.DatabaseCommandExtensionsTests
 {
     [TestFixture]
-    public class ExecuteNonQueryTests
+    public class ExecuteToDataTableTests
     {
         [Test]
-        public void Should_Return_The_Number_Of_Affected_Rows()
+        public void Should_Return_A_DataSet()
         {
             // Arrange
             const string sql = @"
@@ -20,18 +20,30 @@ CREATE TEMPORARY TABLE SuperHero
     PRIMARY KEY ( SuperHeroId )
 );
 
-INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Superman' );
+
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Batman' );
+
+SELECT  SuperHeroId,
+        SuperHeroName
+FROM    SuperHero;
 ";
 
             // Act
-            var rowsAffected = Sequelocity.GetDatabaseCommand( "MySql" )
+            var dataTable = Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( sql )
-                .ExecuteNonQuery();
+                .ExecuteToDataTable();
 
             // Assert
-            Assert.That( rowsAffected == 1 );
+            Assert.That( dataTable.Rows.Count == 2 );
+            Assert.That( dataTable.Rows[0][0].ToString() == "1" );
+            Assert.That( dataTable.Rows[0][1].ToString() == "Superman" );
+            Assert.That( dataTable.Rows[1][0].ToString() == "2" );
+            Assert.That( dataTable.Rows[1][1].ToString() == "Batman" );
         }
-
+        
         [Test]
         public void Should_Null_The_DbCommand_By_Default()
         {
@@ -46,13 +58,21 @@ CREATE TEMPORARY TABLE SuperHero
     PRIMARY KEY ( SuperHeroId )
 );
 
-INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Superman' );
+
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Batman' );
+
+SELECT  SuperHeroId,
+        SuperHeroName
+FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteNonQuery();
+            databaseCommand.ExecuteToDataTable();
 
             // Assert
             Assert.IsNull( databaseCommand.DbCommand );
@@ -72,13 +92,21 @@ CREATE TEMPORARY TABLE SuperHero
     PRIMARY KEY ( SuperHeroId )
 );
 
-INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Superman' );
+
+INSERT INTO SuperHero ( SuperHeroName )
+VALUES ( 'Batman' );
+
+SELECT  SuperHeroId,
+        SuperHeroName
+FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( sql );
 
             // Act
-            var rowsAffected = databaseCommand.ExecuteNonQuery( true );
+            databaseCommand.ExecuteToDataTable( true );
 
             // Assert
             Assert.That( databaseCommand.DbCommand.Connection.State == ConnectionState.Open );
@@ -96,9 +124,9 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( "SELECT 1" )
-                .ExecuteNonQuery();
+                .ExecuteToDataTable();
 
             // Assert
             Assert.IsTrue( wasPreExecuteEventHandlerCalled );
@@ -113,9 +141,9 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( "SELECT 1" )
-                .ExecuteNonQuery();
+                .ExecuteToDataTable();
 
             // Assert
             Assert.IsTrue( wasPostExecuteEventHandlerCalled );
@@ -133,9 +161,9 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "MySql" )
                 .SetCommandText( "asdf;lkj" )
-                .ExecuteNonQuery();
+                .ExecuteToDataTable();
 
             // Assert
             Assert.Throws<global::MySql.Data.MySqlClient.MySqlException>( action );
