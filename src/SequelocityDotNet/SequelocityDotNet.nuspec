@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>$id$</id>
+    <id>Sequelocity</id>
     <version>$version$</version>
-    <title>$title$</title>
+    <title>Sequelocity.NET</title>
     <authors>Randy Burden, David Whitlark and contributors</authors>
     <owners>Randy Burden, David Whitlark and contributors</owners>
     <licenseUrl>https://github.com/AmbitEnergyLabs/Sequelocity.NET/blob/master/LICENSE</licenseUrl>
