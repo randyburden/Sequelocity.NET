@@ -9,7 +9,7 @@ Sequelocity.NET is a simple data access library for the Microsoft .NET Framework
 
 It enables you to write fluent style syntax creating a more elegant and concise way of writing data access code. 
 
-It can be used as a [C# single file drop in](https://raw.githubusercontent.com/AmbitEnergyLabs/Sequelocity.NET/master/src/SequelocityDotNet/SequelocityDotNet.cs) or referenced as a DLL and found on NuGet ( NuGet release coming soon ).
+It can be used as a [C# single file drop in](https://raw.githubusercontent.com/AmbitEnergyLabs/Sequelocity.NET/master/src/SequelocityDotNet/SequelocityDotNet.cs) or referenced as a [NuGet Package](https://www.nuget.org/packages/Sequelocity).
 
 ###Documentation###
 
@@ -20,7 +20,7 @@ It can be used as a [C# single file drop in](https://raw.githubusercontent.com/A
 ###Why Use It?###
 
 Here is the super awesome list of reasons to use Sequelocity:
-- Simplifies your code by eliminating repetitive boilerplate code
+- Simplifies your project by eliminating repetitive boilerplate code
 - Offers a very readable and concise fluent ( method chaining ) syntax
 - Automatically handles all database connection opening, closing, and disposing of unneeded resources
 - Can map results back to strongly typed objects, dynamic objects, DataSets or DataTables
@@ -78,7 +78,7 @@ It is very easy to register to one of these events in order to facilitate inject
 
 If you take a look at the code base for Sequelocity, you will find that almost all of the behavior for the DatabaseCommand object is actually implemented as extension methods. What this means is that new behavior can be easily added by you or your team by simply implementing your own extension methods.
 
-This architectural decision was very much intentional and demonstrates that Sequelocity is not really a framework but a utility and helper library for helping you connect and interact with your ADO.NET supported database of choice. The DatabaseCommand object is just a very simple light-weight wrapper around the .NET framework provided DbCommand in order to enable additional functionality and features.
+This architectural decision was very much intentional and demonstrates that Sequelocity is not really a framework but a utility and helper library for helping you connect and interact with your ADO.NET supported database of choice. The DatabaseCommand object is just a very simple lightweight wrapper around the .NET framework provided DbCommand in order to enable additional functionality and features.
 
 *You can visit the [DatabaseCommand Overview](https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki/DatabaseCommand-Overview) wiki page for a more detail on it and examples of working with the DatabaseCommand.*
 
@@ -93,8 +93,9 @@ Sequelocity is backed by a large test suite comprising over 400 unit and integra
 #####Test Projects Breakdown:#####
 - [SequelocityDotNet](https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet) - This is the main project and contains only a single file named SequelocityDotNet.cs.
 - [SequelocityDotNet.Tests](https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests) - These are unit tests as defined above, are the most abundant, and are lightning fast to run.
+- [SequelocityDotNet.Tests.MySql](https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests.MySql) - These are integration tests against a MySql database kindly provided by AppHarbor. *Note that we do not share the ConnectionString to our test MySQL server for obvious reasons so the tests won't be immediately runnable but you can simply replace the ConnectionString with your own and the tests should run just fine as all tests are self contained and will conveniently create any database objects that they need to satisfy the test.
 - [SequelocityDotNet.Tests.SQLite](https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests.SQLite) - These are integration tests against an in-memory SQLite database and are lightning fast to run.
-- [SequelocityDotNet.Tests.SqlServer](https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests.SqlServer) - These are integration tests against a Sql Server database kindly provided by AppHarbor and take about 8 seconds to run depending on your connection speed. *Note that we do not share the ConnectionString to our test Sql Server for obvious reasons so the tests won't be immediately runnable but you can simply replace the ConnectionString with your own and the tests should run just fine as all tests are self contained and will conveniently create any database objects that they need to satisfy the test.
+- [SequelocityDotNet.Tests.SqlServer](https://github.com/AmbitEnergyLabs/Sequelocity.NET/tree/master/src/SequelocityDotNet.Tests.SqlServer) - These are integration tests against a Sql Server database kindly provided by AppHarbor. *Note that we do not share the ConnectionString to our test Sql Server for obvious reasons so the tests won't be immediately runnable but you can simply replace the ConnectionString with your own and the tests should run just fine as all tests are self contained and will conveniently create any database objects that they need to satisfy the test.
 
 ###Database Support###
 
@@ -104,13 +105,20 @@ Sequelocity works with all ADO.NET providers including SQL Server, SQLite, SQL C
 
 Sequelocity does include a few database provider specific implementation methods listed below. If you would like to contribute additional database provider specific implementations, please feel free to do so by submitting a pull request with accompanying integration tests.
 
+MySQL
+- GenerateInsertForMySQL - Generates a parameterized MySQL INSERT statement from the given object
+- GenerateInsertsForMySQL - Generates a list of concatenated parameterized MySQL INSERT statements from the given list of objects
+- GetDatabaseCommandForMySql - Gets a DatabaseCommand that interacts with a MySQL database.
+
 SQLite
 - GenerateInsertForSQLite - Generates a parameterized SQLite INSERT statement from the given object
 - GenerateInsertsForSQLite - Generates a list of concatenated parameterized SQLite INSERT statements from the given list of objects
+- GetDatabaseCommandForSQLite - Gets a DatabaseCommand that interacts with a SQLite database.
 
 SQL Server
 - GenerateInsertForSqlServer - Generates a parameterized SQLite INSERT statement from the given object
 - GenerateInsertsForSqlServer - Generates a list of concatenated parameterized SQLite INSERT statements from the given list of objects
+- GetDatabaseCommandForSqlServer - Gets a DatabaseCommand that interacts with a Microsoft SQL Server database.
 
 ###Open Source###
 
