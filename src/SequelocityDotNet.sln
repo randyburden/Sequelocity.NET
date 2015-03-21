@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet", "SequelocityDotNet\SequelocityDotNet.csproj", "{92B4AC2E-8F4A-47C7-918E-541FD48C16A0}"
 EndProject
@@ -12,6 +12,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet.Tests.SqlServer", "SequelocityDotNet.Tests.SqlServer\SequelocityDotNet.Tests.SqlServer.csproj", "{D86507B8-1B4E-408F-91D2-C6DEB3BA5F46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet.Tests.MySql", "SequelocityDotNet.Tests.MySql\SequelocityDotNet.Tests.MySql.csproj", "{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{39009076-4216-427D-9EF5-36646C12C71F}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
