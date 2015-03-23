@@ -32,7 +32,7 @@ CREATE TEMPORARY TABLE Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            string connectionString = ConfigurationManager.ConnectionStrings["MySql"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.MySqlConnectionString ].ConnectionString;
 
             var dbConnection = Sequelocity.CreateDbConnection( connectionString, "MySql.Data.MySqlClient" );
 
@@ -73,7 +73,7 @@ CREATE TEMPORARY TABLE Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            string connectionString = ConfigurationManager.ConnectionStrings["MySql"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.MySqlConnectionString ].ConnectionString;
 
             var dbConnection = Sequelocity.CreateDbConnection( connectionString, "MySql.Data.MySqlClient" );
 

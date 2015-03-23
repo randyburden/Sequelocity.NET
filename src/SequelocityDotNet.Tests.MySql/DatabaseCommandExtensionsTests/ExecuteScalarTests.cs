@@ -29,7 +29,7 @@ FROM    SuperHero;
 ";
 
             // Act
-            var superHeroId = Sequelocity.GetDatabaseCommand( "MySql" )
+            var superHeroId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql )
                 .ExecuteScalar()
                 .ToLong();
@@ -62,7 +62,7 @@ FROM    SuperHero;
 ";
 
             // Act
-            var superHeroId = Sequelocity.GetDatabaseCommand( "MySql" )
+            var superHeroId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql )
                 .ExecuteScalar<long>(); // Generic version of the ExecuteScalar method
 
@@ -91,7 +91,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
         SuperHeroName
 FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -122,7 +122,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
         SuperHeroName
 FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -144,7 +144,7 @@ FROM    SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteScalar();
 
@@ -161,7 +161,7 @@ FROM    SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteScalar();
 
@@ -181,7 +181,7 @@ FROM    SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "MySql" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteScalar();
 

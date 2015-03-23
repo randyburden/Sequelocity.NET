@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Customer
 );
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.MySqlConnectionString );
 
 			new DatabaseCommand( dbConnection )
                 .SetCommandText( createSchemaSql )
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS Customer
 );
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.MySqlConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS Person
 );
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.MySqlConnectionString );
 
 			new DatabaseCommand( dbConnection )
                 .SetCommandText( createSchemaSql )
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS Person
 );
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.MySqlConnectionString );
 
 			new DatabaseCommand( dbConnection )
                 .SetCommandText( createSchemaSql )
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS Customer
 );
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.MySqlConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )
@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS Customer
 );
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "MySql" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.MySqlConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )

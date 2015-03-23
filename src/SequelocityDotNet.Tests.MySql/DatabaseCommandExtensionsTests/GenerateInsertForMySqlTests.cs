@@ -33,14 +33,14 @@ CREATE TABLE IF NOT EXISTS Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-			Sequelocity.GetDatabaseCommand( "MySql" )
+			Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( createSchemaSql )
 				.ExecuteNonQuery();
 
 			var customer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .GenerateInsertForMySql( customer )
 				.ExecuteScalar()
 				.ToInt();
@@ -65,14 +65,14 @@ CREATE TABLE IF NOT EXISTS Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.SetCommandText( createSchemaSql )
 				.ExecuteNonQuery();
 
 			var newCustomer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.GenerateInsertForMySql( newCustomer )
 				.ExecuteScalar()
 				.ToInt();
@@ -85,7 +85,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-            var customer = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.SetCommandText( selectCustomerQuery )
 				.ExecuteToObject<Customer>();
 
@@ -113,14 +113,14 @@ CREATE TABLE IF NOT EXISTS Person
     PRIMARY KEY ( CustomerId )
 );
 ";
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( createSchemaSql )
 				.ExecuteNonQuery();
 
 			var customer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-		    var customerId = Sequelocity.GetDatabaseCommand( "MySql" )
+		    var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 		        .GenerateInsertForMySql( customer, "Person" ) // Specifying a table name of Person
 		        .ExecuteScalar<int>();
 
@@ -144,14 +144,14 @@ CREATE TABLE IF NOT EXISTS Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( createSchemaSql )
 				.ExecuteNonQuery();
 
 			var customer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-		    TestDelegate action = () => Sequelocity.GetDatabaseCommand( "MySql" )
+		    TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 		        .GenerateInsertForMySql( customer )
 		        .ExecuteScalar<int>();
 
@@ -176,14 +176,14 @@ CREATE TABLE IF NOT EXISTS Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.SetCommandText( createSchemaSql )
 				.ExecuteNonQuery();
 
 			var newCustomer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.GenerateInsertForMySql( newCustomer, "Customer" )
                 .ExecuteScalar<int>();
 
@@ -195,7 +195,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-            var customer = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.SetCommandText( selectCustomerQuery )
 				.ExecuteToObject<Customer>();
 
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.SetCommandText( createSchemaSql )
 				.ExecuteNonQuery();
 
@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS Customer
 			newCustomer.DateOfBirth = DateTime.Parse( "06/18/1938" );
 
 			// Act
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" );
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString );
 			databaseCommand = DatabaseCommandExtensions.GenerateInsertForMySql( databaseCommand, newCustomer, "Customer" );
 			var customerId = databaseCommand
                 .ExecuteScalar<int>();
@@ -246,7 +246,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-            var customer = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
 				.SetCommandText( selectCustomerQuery )
 				.ExecuteToObject<Customer>();
 
@@ -274,7 +274,7 @@ CREATE TABLE IF NOT EXISTS Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( createSchemaSql )
                 .ExecuteNonQuery();
 
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS Customer
             newCustomer.DateOfBirth = DateTime.Parse( "06/18/1938" );
 
             // Act
-            var customerId = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .GenerateInsertForMySql( ( IDictionary<string, object> ) newCustomer, "Customer" )
                 .ExecuteScalar<int>();
 
@@ -296,7 +296,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-            var customer = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( selectCustomerQuery )
                 .ExecuteToObject<Customer>();
 
@@ -324,14 +324,14 @@ CREATE TABLE IF NOT EXISTS Customer
     PRIMARY KEY ( CustomerId )
 );
 ";
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( createSchemaSql )
                 .ExecuteNonQuery();
 
             dynamic newCustomer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
             // Act
-            var customerId = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .GenerateInsertForMySql( (object) newCustomer, "Customer" )
                 .ExecuteScalar<int>();
 
@@ -343,7 +343,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-            var customer = Sequelocity.GetDatabaseCommand( "MySql" )
+            var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( selectCustomerQuery )
                 .ExecuteToObject<Customer>();
 

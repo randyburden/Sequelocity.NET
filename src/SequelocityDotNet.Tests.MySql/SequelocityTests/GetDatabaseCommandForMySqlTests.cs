@@ -11,7 +11,7 @@ namespace SequelocityDotNet.Tests.MySql.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            const string connectionString = "MySql";
+            string connectionString = ConnectionStringsNames.MySqlConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommandForMySql( connectionString );

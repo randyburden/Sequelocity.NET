@@ -38,7 +38,7 @@ FROM    SuperHero;
 ";
 
             // Act
-            var superHero = Sequelocity.GetDatabaseCommand( "MySql" )
+            var superHero = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql )
                 .ExecuteToDynamicObject();
 
@@ -72,7 +72,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -106,7 +106,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -128,7 +128,7 @@ FROM    SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
                 .ExecuteToDynamicObject();
 
@@ -145,7 +145,7 @@ FROM    SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "MySql" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
                 .ExecuteToDynamicObject();
 
@@ -165,7 +165,7 @@ FROM    SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "MySql" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteToDynamicObject();
 

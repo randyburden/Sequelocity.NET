@@ -12,7 +12,7 @@ namespace SequelocityDotNet.Tests.MySql.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            const string connectionStringName = "MySql";
+            string connectionStringName = ConnectionStringsNames.MySqlConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommand( connectionStringName );
@@ -31,7 +31,7 @@ namespace SequelocityDotNet.Tests.MySql.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            string connectionString = ConfigurationManager.ConnectionStrings["MySql"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.MySqlConnectionString ].ConnectionString;
 
             const string dbProviderFactoryInvariantName = "MySql.Data.MySqlClient";
 
@@ -52,7 +52,7 @@ namespace SequelocityDotNet.Tests.MySql.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            Sequelocity.ConfigurationSettings.Default.ConnectionStringName = "MySql";
+            Sequelocity.ConfigurationSettings.Default.ConnectionStringName = ConnectionStringsNames.MySqlConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommand();
@@ -71,7 +71,7 @@ namespace SequelocityDotNet.Tests.MySql.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            Sequelocity.ConfigurationSettings.Default.ConnectionString = ConfigurationManager.ConnectionStrings["MySql"].ConnectionString;
+            Sequelocity.ConfigurationSettings.Default.ConnectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.MySqlConnectionString ].ConnectionString;
             Sequelocity.ConfigurationSettings.Default.DbProviderFactoryInvariantName = "MySql.Data.MySqlClient";
 
             // Act
@@ -107,7 +107,7 @@ namespace SequelocityDotNet.Tests.MySql.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            string connectionString = ConfigurationManager.ConnectionStrings["MySql"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.MySqlConnectionString ].ConnectionString;
 
             // Act
             TestDelegate action = () => Sequelocity.GetDatabaseCommand( connectionString );

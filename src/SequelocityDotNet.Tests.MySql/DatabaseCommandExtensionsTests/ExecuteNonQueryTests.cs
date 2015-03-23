@@ -24,7 +24,7 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
 ";
 
             // Act
-            var rowsAffected = Sequelocity.GetDatabaseCommand( "MySql" )
+            var rowsAffected = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql )
                 .ExecuteNonQuery();
 
@@ -48,7 +48,7 @@ CREATE TEMPORARY TABLE SuperHero
 
 INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommandForMySql( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -74,7 +74,7 @@ CREATE TEMPORARY TABLE SuperHero
 
 INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert should trigger 1 row affected */
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            var databaseCommand = Sequelocity.GetDatabaseCommandForMySql( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -96,7 +96,7 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            Sequelocity.GetDatabaseCommandForMySql( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteNonQuery();
 
@@ -113,7 +113,7 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            Sequelocity.GetDatabaseCommandForMySql( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteNonQuery();
 
@@ -133,7 +133,7 @@ INSERT INTO SuperHero ( SuperHeroName ) VALUES ( 'Superman' ); /* This insert sh
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( "MySql" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommandForMySql( ConnectionStringsNames.MySqlConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteNonQuery();
 

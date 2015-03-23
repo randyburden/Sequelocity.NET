@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionStringsNames.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\BeginTransactionTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteNonQueryTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteReaderTests.cs" />
@@ -71,10 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ConnectionStrings.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="ConnectionStrings.Template.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
