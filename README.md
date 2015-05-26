@@ -1,7 +1,8 @@
 Sequelocity.NET
 ===============
 
-<a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/v/Sequelocity.svg" alt="NuGet Version" /></a> <a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/dt/Sequelocity.svg" alt="NuGet Download Count" /></a>
+<a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/v/Sequelocity.svg" alt="NuGet Version" /></a> 
+<a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/dt/Sequelocity.svg" alt="NuGet Download Count" /></a>
 
 *Note that this project is currently in a pre-release state although it is already being used in production successfully.*
 
