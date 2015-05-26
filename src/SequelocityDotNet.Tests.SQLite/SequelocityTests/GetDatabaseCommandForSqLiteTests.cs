@@ -1,3 +1,4 @@
+using System.Configuration;
 using NUnit.Framework;
 
 namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
@@ -6,12 +7,12 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
     public class GetDatabaseCommandForSqLiteTests
     {
         [Test]
-        public void Can_Get_A_DatabaseCommand_For_A_SqlServer()
+        public void Can_Get_A_DatabaseCommand_For_Sqlite()
         {
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            const string connectionString = "SqliteInMemoryDatabase";
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString].ConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( connectionString );

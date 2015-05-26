@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Customer
     DateOfBirth     DATETIME        NOT NULL
 );";
 
-    DbConnection dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase" );
+    DbConnection dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabaseConnectionString" );
 
     Sequelocity.GetDatabaseCommand( dbConnection )
         .SetCommandText( sql )
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS Customer
     DateOfBirth     DATETIME        NOT NULL
 );";
 
-    DbConnection dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase" );
+    DbConnection dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabaseConnectionString" );
 
     Sequelocity.GetDatabaseCommand( dbConnection )
         .SetCommandText( sql )

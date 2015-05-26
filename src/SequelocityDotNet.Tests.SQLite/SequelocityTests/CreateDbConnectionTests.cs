@@ -6,16 +6,33 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
     [TestFixture]
     public class CreateDbConnectionTests
     {
+
         [Test]
-        public void Should_Create_A_DbConnection()
+        public void Should_Create_A_DbConnection_When_Passed_A_Connection_String_And_Provider_Name()
         {
             // Arrange
-            const string connectionString = "SqliteInMemoryDatabase";
+            string connectionStringName = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString ].ConnectionString;
 
             const string dbProviderFactoryInvariantName = "System.Data.SQLite";
 
             // Act
-            var dbConnection = Sequelocity.CreateDbConnection( connectionString, dbProviderFactoryInvariantName );
+            var dbConnection = Sequelocity.CreateDbConnection( connectionStringName, dbProviderFactoryInvariantName );
+
+            // Assert
+            Assert.NotNull( dbConnection );
+
+            // Cleanup
+            dbConnection.Dispose();
+        }
+
+        [Test]
+        public void Should_Create_A_DbConnection_When_Passed_A_Connection_String_Name()
+        {
+            // Arrange
+            string connectionStringName = ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString;
+            
+            // Act
+            var dbConnection = Sequelocity.CreateDbConnection( connectionStringName );
 
             // Assert
             Assert.NotNull( dbConnection );
@@ -43,7 +60,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
         public void Should_Throw_An_ArgumentNullException_When_Passed_A_Null_DbProviderFactoryInvariantName()
         {
             // Arrange
-            string connectionString = ConfigurationManager.ConnectionStrings[ "SqliteInMemoryDatabase" ].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString ].ConnectionString;
 
             const string dbProviderFactoryInvariantName = null;
 
@@ -60,7 +77,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
         public void Should_Null_The_DbCommand_On_Dispose()
         {
             // Arrange
-            DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" );
+            DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             // Act
             databaseCommand.Dispose();
@@ -76,7 +93,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
             DatabaseCommand databaseCommand;
 
             // Act
-            using( databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" ) )
+            using( databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString ) )
             {
 
             }

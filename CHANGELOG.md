@@ -1,3 +1,9 @@
+<a name="0.4.0"></a>
+## v0.4.0 'Though Shalt Logith the App Name for SQL Server' (2015-05-26)
+
+Features:
+- Added application name injection for SQL Server.
+
 <a name="0.3.0"></a>
 ## v0.3.0 'MySQL Cometh' (2015-03-20)
 

@@ -50,7 +50,7 @@ BEGIN
 END
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( sql )
@@ -105,7 +105,7 @@ BEGIN
 END
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )
@@ -188,7 +188,7 @@ BEGIN
 END
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( sql )
@@ -240,7 +240,7 @@ BEGIN
 END
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( sql )
@@ -294,7 +294,7 @@ BEGIN
 END
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )
@@ -377,7 +377,7 @@ BEGIN
 END
 ";
 
-			var dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+			var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
 
 			new DatabaseCommand( dbConnection )
 				.SetCommandText( createSchemaSql )

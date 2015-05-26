@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionStringsNames.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\BeginTransactionTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataTableTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataSetTests.cs" />

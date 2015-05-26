@@ -9,7 +9,7 @@ namespace SequelocityDotNet.Tests.SqlServer.DatabaseCommandExtensionsTests
         public void Should_Associate_A_Transaction_With_The_DatabaseCommand()
         {
             // Arrange
-            var connection = Sequelocity.CreateDbConnection( "SqlServer" );
+            var connection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
             connection.Open();
             var transaction = connection.BeginTransaction();
             var databaseCommand = Sequelocity.GetDatabaseCommand( connection );

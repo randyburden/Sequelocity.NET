@@ -33,7 +33,7 @@ FROM    SuperHero;
 ";
 
             // Act
-            var superHero = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            var superHero = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql )
                 .ExecuteToDynamicObject();
 
@@ -61,7 +61,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
         SuperHeroName
 FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -89,7 +89,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
         SuperHeroName
 FROM    SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -111,7 +111,7 @@ FROM    SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
                 .ExecuteToDynamicObject();
 
@@ -128,7 +128,7 @@ FROM    SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
                 .ExecuteToDynamicObject();
 
@@ -148,7 +148,7 @@ FROM    SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteToDynamicObject();
 

@@ -26,7 +26,7 @@ FROM    #SuperHero;
 ";
 
             // Act
-            var superHeroId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var superHeroId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql )
                 .ExecuteScalar()
                 .ToLong();
@@ -56,7 +56,7 @@ FROM    #SuperHero;
 ";
 
             // Act
-            var superHeroId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var superHeroId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql )
                 .ExecuteScalar<long>(); // Generic version of the ExecuteScalar method
 
@@ -82,7 +82,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -110,7 +110,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -132,7 +132,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteScalar();
 
@@ -149,7 +149,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteScalar();
 
@@ -169,7 +169,7 @@ FROM    #SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "SqlServer" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteScalar();
 

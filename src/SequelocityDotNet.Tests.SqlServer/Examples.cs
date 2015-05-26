@@ -105,7 +105,7 @@ END";
         //[TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( CreateSchemaSql )
                 .ExecuteNonQuery();
         }
@@ -130,7 +130,7 @@ INSERT INTO #SuperHero ( SuperHeroName )
 VALUES ( 'Superman' );";
 
     // Act
-    int rowsAffected = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    int rowsAffected = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteNonQuery();
 
@@ -156,7 +156,7 @@ INSERT INTO #SuperHero ( SuperHeroName )
 VALUES ( @SuperHeroName2 );";
 
     // Act
-    int rowsAffected = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    int rowsAffected = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .AddParameter( "@SuperHeroName1", "Superman", DbType.AnsiString )
         .AddParameter( "@SuperHeroName2", "Batman", DbType.AnsiString )
@@ -190,7 +190,7 @@ FROM    #SuperHero;";
     List<object> list = new List<object>();
 
     // Act
-    Sequelocity.GetDatabaseCommand( "SqlServer" )
+    Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteReader( record =>
         {
@@ -226,7 +226,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
 FROM    #SuperHero;";
 
     // Act
-    int superHeroId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    int superHeroId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteScalar()
         .ToInt(); // Using one of the many handy Sequelocity helper extension methods
@@ -254,7 +254,7 @@ SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScala
 FROM    #SuperHero;";
 
     // Act
-    int superHeroId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    int superHeroId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteScalar<int>();
 
@@ -284,7 +284,7 @@ SELECT  SuperHeroId,
 FROM    #SuperHero;";
 
     // Act
-    DataSet dataSet = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    DataSet dataSet = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteToDataSet();
 
@@ -318,7 +318,7 @@ SELECT  SuperHeroId,
 FROM    #SuperHero;";
 
     // Act
-    DataTable dataTable = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    DataTable dataTable = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteToDataTable();
 
@@ -352,7 +352,7 @@ SELECT  SuperHeroId,
 FROM    #SuperHero;";
 
     // Act
-    List<dynamic> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<dynamic> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteToDynamicList();
 
@@ -387,7 +387,7 @@ SELECT  TOP 1
 FROM    #SuperHero;";
 
     // Act
-    dynamic superHero = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    dynamic superHero = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteToDynamicObject();
 
@@ -419,7 +419,7 @@ SELECT  SuperHeroId,
 FROM    #SuperHero;";
 
     // Act
-    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteToList<SuperHero>();
 
@@ -453,7 +453,7 @@ SELECT  SuperHeroId,
 FROM    #SuperHero;";
 
     // Act
-    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteToMap( record =>
         {
@@ -497,7 +497,7 @@ SELECT  TOP 1
 FROM    #SuperHero;";
 
     // Act
-    SuperHero superHero = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    SuperHero superHero = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteToObject<SuperHero>();
 
@@ -547,14 +547,14 @@ BEGIN
 END
 ";
 
-    Sequelocity.GetDatabaseCommand( "SqlServer" )
+    Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteNonQuery();
 
     Customer customer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
     // Act
-    int customerId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    int customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .GenerateInsertForSqlServer( customer )
         .ExecuteScalar<int>();
 
@@ -575,7 +575,7 @@ CREATE TABLE #Customer
 	DateOfBirth     DATETIME        NOT NULL
 );";
 
-    DbConnection dbConnection = Sequelocity.CreateDbConnection( "SqlServer" );
+    DbConnection dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqlServerConnectionString );
 
     Sequelocity.GetDatabaseCommand( dbConnection )
         .SetCommandText( sql )
@@ -625,7 +625,7 @@ BEGIN
 END
 ";
     
-    Sequelocity.GetDatabaseCommand( "SqlServer" )
+    Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .ExecuteNonQuery();
 
@@ -635,7 +635,7 @@ END
     List<Customer> list = new List<Customer> { customer1, customer2, customer3 };
 
     // Act
-    List<long> customerIds = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<long> customerIds = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .GenerateInsertsForSqlServer( list )
         .ExecuteToList<long>();
 
@@ -659,7 +659,7 @@ public class SuperHero
 
 public void AddParameter_Example()
 {
-    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( "SELECT * FROM SuperHero WHERE SuperHeroName = @SuperHeroName" )
         .AddParameter( "@SuperHeroName", "Superman" )
         .ExecuteToList<SuperHero>();
@@ -667,7 +667,7 @@ public void AddParameter_Example()
 
 public void AddParameter_Example_Specifying_An_Explicit_DbType()
 {
-    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( "SELECT * FROM SuperHero WHERE SuperHeroName = @SuperHeroName" )
         .AddParameter( "@SuperHeroName", "Superman", DbType.AnsiString )
         .ExecuteToList<SuperHero>();
@@ -675,7 +675,7 @@ public void AddParameter_Example_Specifying_An_Explicit_DbType()
 
 public void AddParameter_Example_Providing_A_DbParameter()
 {
-    DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" );
+    DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString );
 
     var dbParameter = databaseCommand.DbCommand.CreateParameter();
     dbParameter.ParameterName = "SuperHeroName";
@@ -692,7 +692,7 @@ public void AddParameters_Example_Providing_A_List_Of_Parameter_Values_For_Use_I
 {
     List<string> parameterList = new List<string> { "Superman", "Batman", "Spider-Man" };
 
-    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( "SELECT * FROM SuperHero WHERE SuperHeroName IN ( @SuperHeroNames )" )
         .AddParameters( "@SuperHeroNames", parameterList, DbType.AnsiString )
         .ExecuteToList<SuperHero>();
@@ -714,7 +714,7 @@ WHERE   SuperHeroId = @SuperHeroId
         { "@SuperHeroPartialName", "S" }
     };
 
-    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .AddParameters( dictionary )
         .ExecuteToList<SuperHero>();
@@ -729,13 +729,13 @@ WHERE   SuperHeroId = @SuperHeroId
         OR SuperHeroName = @SuperHeroName
         OR SuperHeroName LIKE '%@SuperHeroPartialName%'";
 
-    DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" );
+    DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString );
 
     DbParameter superHeroIdParameter = databaseCommand.CreateParameter( "@SuperHeroId", 1, DbType.Int32 );
     DbParameter superHeroNameParameter = databaseCommand.CreateParameter( "@SuperHeroName", "Superman", DbType.AnsiString );
     DbParameter superHeroPartialNameParameter = databaseCommand.CreateParameter( "@SuperHeroPartialName", "S", DbType.AnsiString );
 
-    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    List<SuperHero> superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql )
         .AddParameters( superHeroIdParameter, superHeroNameParameter, superHeroPartialNameParameter )
         .ExecuteToList<SuperHero>();
@@ -751,7 +751,7 @@ public void AppendCommandText_Example()
 {
     const string sql = "SELECT TOP 1 * FROM SuperHero;";
 
-    DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+    DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
         .SetCommandText( sql );
 
     // Imagine there is some conditional logic here where we need to add additional queries to the database command
@@ -790,7 +790,7 @@ INSERT INTO #Customer VALUES ( 'Bruce', 'Wayne', '05/27/1939' );
 INSERT INTO #Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 ";
 
-    using ( var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" ) )
+    using ( var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString ) )
     {
         using ( var transaction = databaseCommand.BeginTransaction() )
         {
@@ -846,11 +846,11 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 
     using ( var transaction = new TransactionScope() )
     {
-        var rowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+        var rowsUpdated = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sqlCommand1 )
                 .ExecuteNonQuery();
 
-        var nextRowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+        var nextRowsUpdated = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
             .SetCommandText( sqlCommand2 )
             .ExecuteNonQuery();
 

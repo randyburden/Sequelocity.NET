@@ -10,7 +10,7 @@ namespace SequelocityDotNet.Tests.SqlServer.DatabaseCommandExtensionsTests
 		public void Should_Return_A_New_DbTransaction()
 		{
 			// Arrange
-			var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" );
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString );
 
 			// Act
 			var transaction = databaseCommand.BeginTransaction();
@@ -24,7 +24,7 @@ namespace SequelocityDotNet.Tests.SqlServer.DatabaseCommandExtensionsTests
 		public void Should_Associate_The_DbTransaction_With_The_DatabaseCommand()
 		{
 			// Arrange
-			var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" );
+			var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString );
 
 			// Act
 			var transaction = databaseCommand.BeginTransaction();
@@ -64,11 +64,11 @@ BEGIN
 END
 ";
 
-		    Sequelocity.GetDatabaseCommand( "SqlServer" )
+		    Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 		        .SetCommandText( createTableSchema )
 		        .ExecuteNonQuery();
 
-            var rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 
@@ -83,7 +83,7 @@ INSERT INTO Customer VALUES ( 'Bruce', 'Wayne', '05/27/1939' );
 INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 ";
 
-			using( var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" ) )
+			using( var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString ) )
 			{
 				using( var transaction = databaseCommand.BeginTransaction() )
 				{
@@ -108,7 +108,7 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 				}
 			}
 
-            rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 
@@ -146,11 +146,11 @@ BEGIN
 END
 ";
 
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( createTableSchema )
                 .ExecuteNonQuery();
 
-            var rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 
@@ -165,7 +165,7 @@ INSERT INTO Customer VALUES ( 'Bruce', 'Wayne', '05/27/1939' );
 INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 ";
 
-            using( var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" ) )
+            using( var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString ) )
             {
                 using( var transaction = databaseCommand.BeginTransaction() )
                 {
@@ -190,7 +190,7 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
                 }
             }
 
-            rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 
@@ -228,11 +228,11 @@ BEGIN
 END
 ";
 
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( createTableSchema )
                 .ExecuteNonQuery();
 
-            var rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 
@@ -249,17 +249,17 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 
             using( var transaction = new TransactionScope() )
             {
-                var rowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+                var rowsUpdated = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                         .SetCommandText( sqlCommand1 )
                         .ExecuteNonQuery();
 
-                var nextRowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+                var nextRowsUpdated = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                     .SetCommandText( sqlCommand2 )
                     .ExecuteNonQuery();
 
                 Assert.That( rowsUpdated == 2 && nextRowsUpdated == 1 );
 
-                rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+                rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                         .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                         .ExecuteScalar<int>();
 
@@ -269,7 +269,7 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
                     transaction.Dispose();
             }
 
-            rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 
@@ -307,11 +307,11 @@ BEGIN
 END
 ";
 
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( createTableSchema )
                 .ExecuteNonQuery();
 
-            var rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 
@@ -328,17 +328,17 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 
             using( var transaction = new TransactionScope() )
             {
-                var rowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+                var rowsUpdated = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                         .SetCommandText( sqlCommand1 )
                         .ExecuteNonQuery();
 
-                var nextRowsUpdated = Sequelocity.GetDatabaseCommand( "SqlServer" )
+                var nextRowsUpdated = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                     .SetCommandText( sqlCommand2 )
                     .ExecuteNonQuery();
 
                 Assert.That( rowsUpdated == 2 && nextRowsUpdated == 1 );
 
-                rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+                rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                         .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                         .ExecuteScalar<int>();
 
@@ -348,7 +348,7 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
                     transaction.Complete();
             }
 
-            rowCount = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            rowCount = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT COUNT(*) FROM Customer" )
                 .ExecuteScalar<int>();
 

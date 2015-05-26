@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.Reflection;
 
-namespace SequelocityDotNet.Tests.MySql
+namespace SequelocityDotNet.Tests.SqlServer
 {
     /// <summary>
     /// Connection String Names.
@@ -10,13 +10,13 @@ namespace SequelocityDotNet.Tests.MySql
     public class ConnectionStringsNames
     {
         /// <summary>
-        /// MySQL connection string name.
+        /// SQL Server connection string name.
         /// </summary>
-        public static string MySqlConnectionString = "MySqlConnectionString";
+        public static string SqlServerConnectionString = "SqlServerConnectionString";
 
         static ConnectionStringsNames()
         {
-            AddConnectionStringFromEnvironmentVariableAtRuntime( "Sequelocity_MySqlConnectionString", MySqlConnectionString, "MySql.Data.MySqlClient" );
+            AddConnectionStringFromEnvironmentVariableAtRuntime( "Sequelocity_SqlServerConnectionString", SqlServerConnectionString, "System.Data.SqlClient" );
         }
 
         /// <summary>

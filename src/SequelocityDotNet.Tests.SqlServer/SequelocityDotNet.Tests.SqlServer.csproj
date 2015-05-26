@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionStringsNames.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\BeginTransactionTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataTableTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataSetTests.cs" />
@@ -72,10 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ConnectionStrings.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="ConnectionStrings.Template.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
@@ -94,8 +91,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Copy SourceFiles="ConnectionStrings.Template.config" DestinationFiles="ConnectionStrings.config" SkipUnchangedFiles="true" Condition="!Exists('ConnectionStrings.config')">
-    </Copy>
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

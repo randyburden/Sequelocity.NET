@@ -35,7 +35,7 @@ FROM    #SuperHero;
 ";
 
             // Act
-            var superHero = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var superHero = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql )
                 .ExecuteToDynamicObject();
 
@@ -66,7 +66,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -97,7 +97,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -119,7 +119,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
                 .ExecuteToDynamicObject();
 
@@ -136,7 +136,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
                 .ExecuteToDynamicObject();
 
@@ -156,7 +156,7 @@ FROM    #SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "SqlServer" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteToDynamicObject();
 

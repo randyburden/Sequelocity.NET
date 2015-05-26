@@ -27,7 +27,7 @@ Here is the super awesome list of reasons to use Sequelocity:
 - Automatically handles all database connection opening, closing, and disposing of unneeded resources
 - Can map results back to strongly typed objects, dynamic objects, DataSets or DataTables
 - Can generate SQL insert statements given a strongly typed object, anonymous object, or dynamic object
-- Is backed by over 400 tests
+- Is backed by over 500 tests
 
 ###Usage###
 

@@ -46,14 +46,14 @@ BEGIN
 
 END
 ";
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( sql )
 				.ExecuteNonQuery();
 
 			var customer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.GenerateInsertForSqlServer( customer )
                 .ExecuteScalar<int>();
 
@@ -93,14 +93,14 @@ BEGIN
 END
 ";
 
-			Sequelocity.GetDatabaseCommand( "SqlServer" )
+			Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( createSchemaSql )
 				.ExecuteNonQuery();
 
 			var newCustomer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.GenerateInsertForSqlServer( newCustomer )
                 .ExecuteScalar<int>();
 
@@ -112,7 +112,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-            var customer = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( selectCustomerQuery )
 				.ExecuteToObject<Customer>();
 
@@ -156,14 +156,14 @@ BEGIN
 END
 ";
 
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( sql )
 				.ExecuteNonQuery();
 
 			var customer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.GenerateInsertForSqlServer( customer, "[Person]" ) // Specifying a table name of Person
 				.ExecuteScalar<int>();
 
@@ -202,14 +202,14 @@ BEGIN
 
 END
 ";
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql )
                 .ExecuteNonQuery();
 
 			var customer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "SqlServer" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.GenerateInsertForSqlServer( customer )
                 .ExecuteScalar<int>();
 
@@ -249,14 +249,14 @@ BEGIN
 
 END
 ";
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( createSchemaSql )
                 .ExecuteNonQuery();
 
 			var newCustomer = new { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.GenerateInsertForSqlServer( newCustomer, "[Customer]" )
                 .ExecuteScalar<int>();
 
@@ -268,7 +268,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-            var customer = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( selectCustomerQuery )
 				.ExecuteToObject<Customer>();
 
@@ -311,7 +311,7 @@ BEGIN
 
 END
 ";
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( createSchemaSql )
                 .ExecuteNonQuery();
 
@@ -321,7 +321,7 @@ END
 			newCustomer.DateOfBirth = DateTime.Parse( "06/18/1938" );
 
 			// Act
-		    var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" );
+		    var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString );
 			databaseCommand = DatabaseCommandExtensions.GenerateInsertForSqlServer( databaseCommand, newCustomer, "[Customer]" );
 			var customerId = databaseCommand
                 .ExecuteScalar<int>();
@@ -334,7 +334,7 @@ SELECT  CustomerId,
 FROM    Customer;
 ";
 
-			var customer = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var customer = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( selectCustomerQuery )
 				.ExecuteToObject<Customer>();
 

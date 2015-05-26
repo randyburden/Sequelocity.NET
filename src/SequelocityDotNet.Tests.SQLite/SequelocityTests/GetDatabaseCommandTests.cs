@@ -12,7 +12,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            const string connectionStringName = "SqliteInMemoryDatabase";
+            string connectionStringName = ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommand( connectionStringName );
@@ -31,7 +31,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            const string connectionString = "SqliteInMemoryDatabase";
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString ].ConnectionString;
 
             const string dbProviderFactoryInvariantName = "System.Data.SQLite";
 
@@ -52,7 +52,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            Sequelocity.ConfigurationSettings.Default.ConnectionStringName = "SqliteInMemoryDatabase";
+            Sequelocity.ConfigurationSettings.Default.ConnectionStringName = ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommand();
@@ -71,7 +71,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            Sequelocity.ConfigurationSettings.Default.ConnectionStringName = "SqliteInMemoryDatabase";
+            Sequelocity.ConfigurationSettings.Default.ConnectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString ].ConnectionString;
             Sequelocity.ConfigurationSettings.Default.DbProviderFactoryInvariantName = "System.Data.SQLite";
 
             // Act
@@ -107,7 +107,7 @@ namespace SequelocityDotNet.Tests.SQLite.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            string connectionString = ConfigurationManager.ConnectionStrings["SqliteInMemoryDatabase"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString ].ConnectionString;
 
             // Act
             TestDelegate action = () => Sequelocity.GetDatabaseCommand( connectionString );

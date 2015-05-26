@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Customer
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            var dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase" );
+            var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( sql )
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS Customer
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            var dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase" );
+            var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( createSchemaSql )
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS Person
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            var dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase" );
+            var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( sql )
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS Person
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            var dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase", "System.Data.SQLite" );
+            var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString, "System.Data.SQLite" );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( sql )
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS Customer
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            var dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase" );
+            var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( createSchemaSql )
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS Customer
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            var dbConnection = Sequelocity.CreateDbConnection( "SqliteInMemoryDatabase" );
+            var dbConnection = Sequelocity.CreateDbConnection( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( createSchemaSql )

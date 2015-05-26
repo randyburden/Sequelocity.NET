@@ -1,3 +1,4 @@
+using System.Configuration;
 using NUnit.Framework;
 
 namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
@@ -11,7 +12,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            const string connectionString = "SqlServer";
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringsNames.SqlServerConnectionString].ConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommandForSqlServer( connectionString );

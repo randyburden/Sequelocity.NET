@@ -22,7 +22,7 @@ INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert shou
 ";
 
             // Act
-            var rowsAffected = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            var rowsAffected = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql )
                 .ExecuteNonQuery();
 
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS SuperHero
 
 INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert should trigger 1 row affected */
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS SuperHero
 
 INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert should trigger 1 row affected */
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -90,7 +90,7 @@ INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert shou
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteNonQuery();
 
@@ -107,7 +107,7 @@ INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert shou
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteNonQuery();
 
@@ -127,7 +127,7 @@ INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert shou
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( "SqliteInMemoryDatabase" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteNonQuery();
 

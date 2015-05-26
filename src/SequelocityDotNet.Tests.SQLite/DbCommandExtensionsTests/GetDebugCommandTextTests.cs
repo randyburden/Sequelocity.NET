@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Customer
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            string connectionString = ConfigurationManager.ConnectionStrings["SqliteInMemoryDatabase"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString].ConnectionString;
 
             var dbConnection = Sequelocity.CreateDbConnection( connectionString, "System.Data.SQLite" );
 
@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS Customer
                 .GenerateInsertForSQLite( customer2 );
 
             // Act
-
             var debugCommandText = databaseCommand.DbCommand.GetDebugCommandText();
 
             // Visual Assertion
@@ -66,9 +65,9 @@ CREATE TABLE IF NOT EXISTS Customer
     LastName        NVARCHAR(120)   NOT NULL,
     DateOfBirth     DATETIME        NOT NULL
 );";
-            const string connectionString = "SqliteInMemoryDatabase";
+            string connectionStringName = ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString;
 
-            var dbConnection = Sequelocity.CreateDbConnection( connectionString, "System.Data.SQLite" );
+            var dbConnection = Sequelocity.CreateDbConnection( connectionStringName, "System.Data.SQLite" );
 
             new DatabaseCommand( dbConnection )
                 .SetCommandText( sql )
@@ -82,7 +81,6 @@ CREATE TABLE IF NOT EXISTS Customer
                 .GenerateInsertForSQLite( customer2 );
 
             // Act
-
             var debugCommandText = databaseCommand.DbCommand.GetDebugCommandText();
 
             // Visual Assertion
@@ -91,7 +89,6 @@ CREATE TABLE IF NOT EXISTS Customer
             // Assert
             Assert.That( debugCommandText.Contains( customer.FirstName ) );
             Assert.That( debugCommandText.Contains( customer.LastName ) );
-            //Assert.That( debugCommandText.Contains( customer.DateOfBirth.ToString() ) );
         }
     }
 }

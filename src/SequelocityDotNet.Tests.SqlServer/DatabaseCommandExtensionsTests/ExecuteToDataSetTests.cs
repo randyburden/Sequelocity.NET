@@ -29,7 +29,7 @@ FROM    #SuperHero;
 ";
 
             // Act
-            var dataSet = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var dataSet = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql )
                 .ExecuteToDataSet();
 
@@ -62,7 +62,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -93,7 +93,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -115,7 +115,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteToDataSet();
 
@@ -132,7 +132,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteToDataSet();
 
@@ -152,7 +152,7 @@ FROM    #SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "SqlServer" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteToDataSet();
 

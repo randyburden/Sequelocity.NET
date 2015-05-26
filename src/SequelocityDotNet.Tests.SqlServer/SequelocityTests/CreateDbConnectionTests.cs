@@ -7,10 +7,26 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
     public class CreateDbConnectionTests
     {
         [Test]
-        public void Should_Create_A_DbConnection()
+        public void Should_Create_A_DbConnection_When_Passed_A_Connection_StringName()
         {
             // Arrange
-            const string connectionString = "SqlServer";
+            string connectionStringName = ConnectionStringsNames.SqlServerConnectionString;
+            
+            // Act
+            var dbConnection = Sequelocity.CreateDbConnection( connectionStringName );
+
+            // Assert
+            Assert.NotNull( dbConnection );
+
+            // Cleanup
+            dbConnection.Dispose();
+        }
+
+        [Test]
+        public void Should_Create_A_DbConnection_When_Passed_A_Connection_String_And_Provider_Name()
+        {
+            // Arrange
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqlServerConnectionString ].ConnectionString;
 
             const string dbProviderFactoryInvariantName = "System.Data.SqlClient";
 
@@ -43,7 +59,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
         public void Should_Throw_A_DbProviderFactoryNotFoundException_When_Passed_A_Null_DbProviderFactoryInvariantName()
         {
             // Arrange
-            string connectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringsNames.SqlServerConnectionString].ConnectionString;
 
             const string dbProviderFactoryInvariantName = null;
 
@@ -60,7 +76,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
         public void Should_Null_The_DbCommand_On_Dispose()
         {
             // Arrange
-            DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" );
+            DatabaseCommand databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString );
 
             // Act
             databaseCommand.Dispose();
@@ -76,7 +92,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
             DatabaseCommand databaseCommand;
 
             // Act
-            using( databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" ) )
+            using( databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString ) )
             {
 
             }

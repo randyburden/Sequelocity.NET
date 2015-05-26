@@ -43,16 +43,16 @@ AS
 	END
 ";
 
-			Sequelocity.GetDatabaseCommand( "SqlServer" )
+			Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( dropStoredProcedureSql )
 				.ExecuteNonQuery();
 
-			Sequelocity.GetDatabaseCommand( "SqlServer" )
+			Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( createStoredProcedureSql )
 				.ExecuteNonQuery();
 
 			// Act
-			var superhero = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var superhero = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandType( CommandType.StoredProcedure )
 				.SetCommandText( "GetSuperHeroByName" )
 				.AddParameter( "@SuperHeroName", "Superman", DbType.AnsiString )
@@ -94,16 +94,16 @@ AS
 	END
 ";
 
-			Sequelocity.GetDatabaseCommand( "SqlServer" )
+			Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( dropStoredProcedureSql )
 				.ExecuteNonQuery();
 
-			Sequelocity.GetDatabaseCommand( "SqlServer" )
+			Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( createStoredProcedureSql )
 				.ExecuteNonQuery();
 
 			// Act
-			var superhero = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var superhero = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( "EXEC GetSuperHeroByName @SuperHeroName" )
 				.AddParameter( "@SuperHeroName", "Superman", DbType.AnsiString )
 				.ExecuteToObject<SuperHero>();

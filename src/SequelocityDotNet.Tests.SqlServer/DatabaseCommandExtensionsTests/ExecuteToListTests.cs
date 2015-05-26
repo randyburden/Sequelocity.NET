@@ -35,7 +35,7 @@ FROM    #SuperHero;
 ";
 
 			// Act
-			var superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( sql )
 				.ExecuteToList<SuperHero>();
 
@@ -68,7 +68,7 @@ SELECT  SuperHeroId,
 		SuperHeroName
 FROM    #SuperHero;
 ";
-			var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( sql );
 
 			// Act
@@ -99,7 +99,7 @@ SELECT  SuperHeroId,
 		SuperHeroName
 FROM    #SuperHero;
 ";
-			var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( sql );
 
 			// Act
@@ -121,7 +121,7 @@ FROM    #SuperHero;
 			Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
 			// Act
-			var superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
 				.ExecuteToList<SuperHero>();
 
@@ -138,7 +138,7 @@ FROM    #SuperHero;
 			Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
 			// Act
-			var superHeroes = Sequelocity.GetDatabaseCommand( "SqlServer" )
+			var superHeroes = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
 				.ExecuteToList<SuperHero>();
 
@@ -158,7 +158,7 @@ FROM    #SuperHero;
 			} );
 
 			// Act
-			TestDelegate action = () => Sequelocity.GetDatabaseCommand( "SqlServer" )
+			TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
 				.SetCommandText( "asdf;lkj" )
 				.ExecuteToList<SuperHero>();
 

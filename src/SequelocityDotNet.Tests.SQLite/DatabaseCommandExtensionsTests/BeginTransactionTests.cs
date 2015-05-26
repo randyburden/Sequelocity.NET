@@ -9,7 +9,7 @@ namespace SequelocityDotNet.Tests.SQLite.DatabaseCommandExtensionsTests
         public void Should_Return_A_New_DbTransaction()
         {
             // Arrange
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqliteInMemoryDatabase" );
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             // Act
             var transaction = databaseCommand.BeginTransaction();
@@ -23,7 +23,7 @@ namespace SequelocityDotNet.Tests.SQLite.DatabaseCommandExtensionsTests
         public void Should_Associate_The_DbTransaction_With_The_DatabaseCommand()
         {
             // Arrange
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqliteInMemoryDatabase" );
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString );
 
             // Act
             var transaction = databaseCommand.BeginTransaction();

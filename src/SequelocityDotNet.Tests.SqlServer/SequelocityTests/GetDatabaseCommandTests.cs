@@ -12,7 +12,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            const string connectionStringName = "SqlServer";
+            string connectionStringName = ConnectionStringsNames.SqlServerConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommand( connectionStringName );
@@ -31,7 +31,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            string connectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqlServerConnectionString ].ConnectionString;
 
             const string dbProviderFactoryInvariantName = "System.Data.SqlClient";
 
@@ -52,7 +52,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            Sequelocity.ConfigurationSettings.Default.ConnectionStringName = "SqlServer";
+            Sequelocity.ConfigurationSettings.Default.ConnectionStringName = ConnectionStringsNames.SqlServerConnectionString;
 
             // Act
             var databaseCommand = Sequelocity.GetDatabaseCommand();
@@ -71,7 +71,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            Sequelocity.ConfigurationSettings.Default.ConnectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            Sequelocity.ConfigurationSettings.Default.ConnectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqlServerConnectionString ].ConnectionString;
             Sequelocity.ConfigurationSettings.Default.DbProviderFactoryInvariantName = "System.Data.SqlClient";
 
             // Act
@@ -107,7 +107,7 @@ namespace SequelocityDotNet.Tests.SqlServer.SequelocityTests
             // Arrange
             TestHelpers.ClearDefaultConfigurationSettings();
 
-            string connectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ConnectionStringsNames.SqlServerConnectionString].ConnectionString;
 
             // Act
             TestDelegate action = () => Sequelocity.GetDatabaseCommand( connectionString );

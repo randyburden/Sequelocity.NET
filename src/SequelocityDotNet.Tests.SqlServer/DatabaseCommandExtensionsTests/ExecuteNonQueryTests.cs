@@ -23,7 +23,7 @@ VALUES ( 'Superman' );
 ";
 
             // Act
-            var rowsAffected = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var rowsAffected = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql )
                 .ExecuteNonQuery();
 
@@ -46,7 +46,7 @@ CREATE TABLE #SuperHero
 INSERT INTO #SuperHero ( SuperHeroName )
 VALUES ( 'Superman' );
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -71,7 +71,7 @@ CREATE TABLE #SuperHero
 INSERT INTO #SuperHero ( SuperHeroName )
 VALUES ( 'Superman' );
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             // Act
@@ -93,7 +93,7 @@ VALUES ( 'Superman' );
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteNonQuery();
 
@@ -110,7 +110,7 @@ VALUES ( 'Superman' );
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteNonQuery();
 
@@ -130,7 +130,7 @@ VALUES ( 'Superman' );
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "SqlServer" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteNonQuery();
 

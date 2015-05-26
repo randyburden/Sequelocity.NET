@@ -33,7 +33,7 @@ FROM    #SuperHero;
             var list = new List<object>();
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql )
                 .ExecuteReader( record =>
                 {
@@ -71,7 +71,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             var list = new List<object>();
@@ -113,7 +113,7 @@ SELECT  SuperHeroId,
         SuperHeroName
 FROM    #SuperHero;
 ";
-            var databaseCommand = Sequelocity.GetDatabaseCommand( "SqlServer" )
+            var databaseCommand = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( sql );
 
             var list = new List<object>();
@@ -146,7 +146,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command => wasPreExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteReader( record => new Object() );
 
@@ -163,7 +163,7 @@ FROM    #SuperHero;
             Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command => wasPostExecuteEventHandlerCalled = true );
 
             // Act
-            Sequelocity.GetDatabaseCommand( "SqlServer" )
+            Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "SELECT 1" )
                 .ExecuteReader( record => new Object() );
 
@@ -183,7 +183,7 @@ FROM    #SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommand( "SqlServer" )
+            TestDelegate action = () => Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
                 .SetCommandText( "asdf;lkj" )
                 .ExecuteReader( record => new Object() );
 

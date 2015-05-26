@@ -29,7 +29,7 @@ CREATE TABLE #Customer
     DateOfBirth     DATETIME        NOT NULL
 );
 ";
-            string connectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqlServerConnectionString ].ConnectionString;
 
             var dbConnection = Sequelocity.CreateDbConnection( connectionString, "System.Data.SqlClient" );
 
@@ -49,7 +49,7 @@ CREATE TABLE #Customer
 
             // Visual Assertion
             Trace.WriteLine( debugCommandText );
-            
+
             // Assert
             Assert.That( debugCommandText.Contains( connectionString.Substring( 0, 10 ) ) ); // Using a substring as the framework will remove the password so we can't anticipate the entire connection string will be shown
         }
@@ -67,7 +67,7 @@ CREATE TABLE #Customer
     DateOfBirth     DATETIME        NOT NULL
 );
 ";
-            string connectionString = ConfigurationManager.ConnectionStrings["SqlServer"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings[ ConnectionStringsNames.SqlServerConnectionString ].ConnectionString;
 
             var dbConnection = Sequelocity.CreateDbConnection( connectionString, "System.Data.SqlClient" );
 

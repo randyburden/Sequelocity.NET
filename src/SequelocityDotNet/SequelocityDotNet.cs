@@ -1,5 +1,5 @@
 ﻿/*
-    Sequelocity.NET v0.3.0
+    Sequelocity.NET v0.4.0
 
     Sequelocity.NET is a simple data access library for the Microsoft .NET
     Framework providing lightweight ADO.NET wrapper, object mapper, and helper
@@ -111,6 +111,7 @@ namespace SequelocityDotNet
 
         /// <summary>Gets a <see cref="DatabaseCommand" /> that interacts with a Microsoft SQL Server database.</summary>
         /// <param name="connectionStringOrName">Connection string or connection string name.</param>
+        /// <param name="applicationName">Optional application name to inject into the ApplicationName property of the connection string so that the application name is accessible in SQL Server via the APP_NAME() function and during tracing.</param>
         /// <returns>A new <see cref="DatabaseCommand" /> instance.</returns>
         /// <exception cref="ConnectionStringNotFoundException">
         /// Thrown when no ConnectionString could be found. A valid ConnectionString or Connection String Name must be supplied in
@@ -127,9 +128,27 @@ namespace SequelocityDotNet
         /// <exception cref="Exception">
         /// An unknown error occurred creating a connection as the call to DbProviderFactory.CreateConnection() returned null.
         /// </exception>
-        public static DatabaseCommand GetDatabaseCommandForSqlServer( string connectionStringOrName = null )
+        public static DatabaseCommand GetDatabaseCommandForSqlServer( string connectionStringOrName = null, string applicationName = null )
         {
-            return GetDatabaseCommand( connectionStringOrName, "System.Data.SqlClient" );
+            var databaseCommand = GetDatabaseCommand( connectionStringOrName, "System.Data.SqlClient" );
+
+            var builder = new System.Data.SqlClient.SqlConnectionStringBuilder( databaseCommand.DbCommand.Connection.ConnectionString );
+
+            if ( String.IsNullOrWhiteSpace( builder.ApplicationName ) )
+            {
+                if ( String.IsNullOrWhiteSpace( applicationName ) == false )
+                {
+                    builder.ApplicationName = applicationName;
+                }
+                else if ( String.IsNullOrWhiteSpace( ConfigurationSettings.Default.ApplicationName ) == false )
+                {
+                    builder.ApplicationName = ConfigurationSettings.Default.ApplicationName;
+                }
+            }
+
+            databaseCommand.DbCommand.Connection.ConnectionString = builder.ToString();
+
+            return databaseCommand;
         }
 
         /// <summary>Gets a <see cref="DatabaseCommand" /> that interacts with a SQLite database.</summary>
@@ -348,6 +367,10 @@ namespace SequelocityDotNet
 
                 /// <summary>Default connection string.</summary>
                 public static string ConnectionString = null;
+
+                /// <summary>The current application name.</summary>
+                /// <remarks>Default implementation is Environment.MachineName-AppDomain.CurrentDomain.FriendlyName.</remarks>
+                public static string ApplicationName = String.Format( "{0}-{1}", Environment.MachineName, AppDomain.CurrentDomain.FriendlyName );
             }
 
             /// <summary>
@@ -367,7 +390,7 @@ namespace SequelocityDotNet
                 /// <param name="exception">Unhandled exception.</param>
                 /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
                 public delegate void DatabaseCommandUnhandledExceptionEventHandler( Exception exception, DatabaseCommand databaseCommand );
-
+                
                 /// <summary>Event triggered when an unhandled exception occurs.</summary>
                 public static readonly List<DatabaseCommandUnhandledExceptionEventHandler> DatabaseCommandUnhandledExceptionEventHandlers = new List<DatabaseCommandUnhandledExceptionEventHandler>();
 
@@ -1798,7 +1821,7 @@ namespace SequelocityDotNet
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="parameterName" /> parameter is null.</exception>
         public static DbCommand AddParameter( this DbCommand dbCommand, string parameterName, object parameterValue )
         {
-            if ( string.IsNullOrWhiteSpace( parameterName ) )
+            if ( String.IsNullOrWhiteSpace( parameterName ) )
             {
                 throw new ArgumentNullException( "parameterName" );
             }
@@ -1819,7 +1842,7 @@ namespace SequelocityDotNet
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="parameterName" /> parameter is null.</exception>
         public static DbCommand AddParameter( this DbCommand dbCommand, string parameterName, object parameterValue, DbType dbType )
         {
-            if ( string.IsNullOrWhiteSpace( parameterName ) )
+            if ( String.IsNullOrWhiteSpace( parameterName ) )
             {
                 throw new ArgumentNullException( "parameterName" );
             }
@@ -1904,7 +1927,7 @@ namespace SequelocityDotNet
         /// </exception>
         public static DbCommand AddParameters<T>( this DbCommand dbCommand, string parameterName, List<T> parameterValues )
         {
-            if ( string.IsNullOrWhiteSpace( parameterName ) )
+            if ( String.IsNullOrWhiteSpace( parameterName ) )
             {
                 throw new ArgumentNullException( "parameterName" );
             }
@@ -1919,7 +1942,7 @@ namespace SequelocityDotNet
                 throw new Exception( "Parameter values list is empty." );
             }
 
-            if ( string.IsNullOrWhiteSpace( dbCommand.CommandText ) )
+            if ( String.IsNullOrWhiteSpace( dbCommand.CommandText ) )
             {
                 throw new Exception( "The CommandText must already be set before calling this method." );
             }
@@ -1972,7 +1995,7 @@ namespace SequelocityDotNet
         /// </exception>
         public static DbCommand AddParameters<T>( this DbCommand dbCommand, string parameterName, List<T> parameterValues, DbType dbType )
         {
-            if ( string.IsNullOrWhiteSpace( parameterName ) )
+            if ( String.IsNullOrWhiteSpace( parameterName ) )
             {
                 throw new ArgumentNullException( "parameterName" );
             }
@@ -1987,7 +2010,7 @@ namespace SequelocityDotNet
                 throw new Exception( "Parameter values list is empty." );
             }
 
-            if ( string.IsNullOrWhiteSpace( dbCommand.CommandText ) )
+            if ( String.IsNullOrWhiteSpace( dbCommand.CommandText ) )
             {
                 throw new Exception( "The CommandText must already be set before calling this method." );
             }
@@ -2140,12 +2163,11 @@ namespace SequelocityDotNet
 
             sb.AppendLine( "/******** COMMAND & CONNECTION INFO ********/" );
             sb.AppendLine( "/*" );
-            //sb.AppendLine( "Application Name: " + System.AppDomain.CurrentDomain.FriendlyName );
+            sb.AppendLine( "Application Name: " + AppDomain.CurrentDomain.FriendlyName );
             sb.AppendLine( "Database Server: " + dbCommand.Connection.DataSource );
             sb.AppendLine( "Database Name: " + dbCommand.Connection.Database );
             sb.AppendLine( "Connection String: " + dbCommand.Connection.ConnectionString );
             sb.AppendLine( "Connection State: " + dbCommand.Connection.State );
-            //sb.AppendLine( "DbProviderFactory: " + DbProviderFactories.GetFactory( dbCommand.Connection ) );
             sb.AppendLine( "Command Timeout: " + dbCommand.CommandTimeout + " sec." );
             sb.AppendLine( "Command Parameter Count: " + dbCommand.Parameters.Count );
             sb.AppendLine( "Client Machine Name: " + Environment.MachineName );
@@ -2400,7 +2422,7 @@ SELECT SCOPE_IDENTITY() AS [LastInsertedId];
                 throw new ArgumentNullException( "sqlInsertStatementTemplate" );
             }
 
-            if ( string.IsNullOrWhiteSpace( sqlInsertStatementTemplate ) )
+            if ( String.IsNullOrWhiteSpace( sqlInsertStatementTemplate ) )
             {
                 throw new ArgumentNullException( "sqlInsertStatementTemplate", "The 'sqlInsertStatementTemplate' parameter must not be null, empty, or whitespace." );
             }
