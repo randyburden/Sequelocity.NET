@@ -2,7 +2,7 @@
 ## v0.4.0 'Though Shalt Logith the App Name for SQL Server' (2015-05-26)
 
 Features:
-- Added application name injection for SQL Server.
+- Added application name injection for SQL Server [b4fc1869](https://github.com/AmbitEnergyLabs/Sequelocity.NET/commit/b4fc1869ef3c22fa2dc6fde0711de503333d5ba2).
 
 <a name="0.3.0"></a>
 ## v0.3.0 'MySQL Cometh' (2015-03-20)
