@@ -3,8 +3,10 @@ Sequelocity.NET
 
 <a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/v/Sequelocity.svg" alt="NuGet Version" /></a> 
 <a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/dt/Sequelocity.svg" alt="NuGet Download Count" /></a>
+<img src="https://ci.appveyor.com/api/projects/status/github/ambitenergylabs/sequelocity.net?svg=true" alt="AppVeyor Build Status" />
 
-*Note that this project is currently in a pre-release state although it is already being used in production successfully.*
+*Note that this project is currently in a stable pre-release state and is already being used in production successfully.*
+*We currently plan to bump to version 1.0 once PostgreSQL support is added.*
 
 ###What is it?###
 
