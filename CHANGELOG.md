@@ -1,3 +1,9 @@
+<a name="0.5.0"></a>
+## v0.5.0 'Null versus DBNull.Value Cage Match, let the bloodshed begin' (2015-06-19)
+
+Features:
+- Added feature to use nullable parameters ( Contribution from Rahul Rumalla, thanks! ) [577e4474](https://github.com/AmbitEnergyLabs/Sequelocity.NET/commit/577e44744e38c9db2d9ec92e540e8bc2d4450ea8).
+
 <a name="0.4.0"></a>
 ## v0.4.0 'Though Shalt Logith the App Name for SQL Server' (2015-05-26)
 

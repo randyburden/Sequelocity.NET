@@ -1,5 +1,5 @@
 ﻿/*
-    Sequelocity.NET v0.4.0
+    Sequelocity.NET v0.5.0
 
     Sequelocity.NET is a simple data access library for the Microsoft .NET
     Framework providing lightweight ADO.NET wrapper, object mapper, and helper
