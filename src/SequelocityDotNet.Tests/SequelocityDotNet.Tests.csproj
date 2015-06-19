@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbCommandExtensionsTests\AddNullableParameterTests.cs" />
     <Compile Include="Bugs\Bug5.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\AddParametersTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\AddParameterTests.cs" />
