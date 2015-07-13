@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Transactions;
 using NUnit.Framework;
 
@@ -862,5 +864,107 @@ INSERT INTO Customer VALUES ( 'Peter', 'Parker', '08/18/1962' );
 } 
 
 #endregion Transaction Examples
+
+#region Event Handler Examples
+
+[Test]
+public void PreExecute_Example()
+{
+    // Arrange
+    string commandText = string.Empty;
+
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command =>
+    {
+        if ( command.DbCommand.CommandType == CommandType.Text )
+        {
+            command.DbCommand.CommandText = "/* Application Name: MyAppName */" + Environment.NewLine + command.DbCommand.CommandText;
+            commandText = command.DbCommand.CommandText;
+        }
+    } );
+
+    // Act
+    var id = Sequelocity.GetDatabaseCommandForSqlServer( ConnectionStringsNames.SqlServerConnectionString )
+        .SetCommandText( "SELECT 1 as Id" )
+        .ExecuteScalar<int>();
+
+    // Visual Assertion
+    Trace.WriteLine( commandText );
+
+    // Assert
+    Assert.That( commandText.StartsWith( "/* Application Name: MyAppName */" ) );
+    Assert.That( id == 1 );
+
+    // Cleanup
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Clear();
+}
+
+[Test]
+public void PostExecute_Example()
+{
+    // Arrange
+    var dictionary = new ConcurrentDictionary<DatabaseCommand,Stopwatch>();
+    long elapsedMilliseconds = 0;
+
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Add( command =>
+    {
+        dictionary[command] = Stopwatch.StartNew();
+    } );
+
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Add( command =>
+    {
+        Stopwatch stopwatch;
+        if ( dictionary.TryRemove( command, out stopwatch ) )
+            elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+    } );
+
+    // Act
+    var id = Sequelocity.GetDatabaseCommandForSqlServer( ConnectionStringsNames.SqlServerConnectionString )
+        .SetCommandText( "SELECT 1 as Id" )
+        .ExecuteScalar<int>();
+
+    // Visual Assertion
+    Trace.WriteLine( "Elapsed Milliseconds: " + elapsedMilliseconds );
+
+    // Assert
+    Assert.That( elapsedMilliseconds >= 0 );
+
+    // Cleanup
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPreExecuteEventHandlers.Clear();
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandPostExecuteEventHandlers.Clear();
+}
+
+[Test]
+public void UnhandledException_Example()
+{
+    // Arrange
+    Exception thrownException = null;
+
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandUnhandledExceptionEventHandlers.Add( ( exception, command ) =>
+    {
+        thrownException = exception;
+    } );
+            
+    try
+    {
+        var id = Sequelocity.GetDatabaseCommandForSqlServer( ConnectionStringsNames.SqlServerConnectionString )
+            .SetCommandText( "SELECT asdasdffsdf as Id" )
+            .ExecuteScalar<int>();
+    }
+    catch ( Exception )
+    {
+        // ignored
+    }
+
+    // Visual Assertion
+    Trace.WriteLine( thrownException );
+
+    // Assert
+    Assert.NotNull( thrownException.Message.Contains( "Invalid column name 'asdasdffsdf'" ) );
+
+    // Cleanup
+    Sequelocity.ConfigurationSettings.EventHandlers.DatabaseCommandUnhandledExceptionEventHandlers.Clear();
+}
+
+#endregion Event Handler Examples
     }
 }

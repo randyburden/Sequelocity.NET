@@ -163,7 +163,7 @@ END
 			var customer = new Customer { FirstName = "Clark", LastName = "Kent", DateOfBirth = DateTime.Parse( "06/18/1938" ) };
 
 			// Act
-            var customerId = Sequelocity.GetDatabaseCommand( ConnectionStringsNames.SqlServerConnectionString )
+            var customerId = Sequelocity.GetDatabaseCommandForSqlServer( ConnectionStringsNames.SqlServerConnectionString )
 				.GenerateInsertForSqlServer( customer, "[Person]" ) // Specifying a table name of Person
 				.ExecuteScalar<int>();
 
