@@ -1,0 +1,11 @@
+language: csharp
+solution: src/SequelocityDotNet.sln
+install:
+  - nuget restore src/SequelocityDotNet.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release src/SequelocityDotNet.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/SequelocityDotNet.Tests/bin/Release/SequelocityDotNet.Tests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/SequelocityDotNet.Tests.MySql/bin/Release/SequelocityDotNet.Tests.MySql.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/SequelocityDotNet.Tests.SQLite/bin/Release/SequelocityDotNet.Tests.SQLite.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/SequelocityDotNet.Tests.SqlServer/bin/Release/SequelocityDotNet.Tests.SqlServer.dll
