@@ -1151,6 +1151,107 @@ namespace SequelocityDotNet
         }
 
         /// <summary>
+        /// Executes a statement against the database and calls the <paramref name="selector" /> function for each record returned.
+        /// </summary>
+        /// <remarks>
+        /// For safety the DbDataReader is returned as an IDataRecord to the callback so that callers cannot modify the current row
+        /// being read.
+        /// </remarks>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="selector">Function called for each record returned.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        public static IEnumerable<T> ExecuteReader<T>( this DatabaseCommand databaseCommand, Func<IDataRecord, T> selector, bool keepConnectionOpen = false )
+        {
+            DbDataReader dbDataReader = null;
+
+            try
+            {
+                try
+                {
+                    Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPreExecuteEventHandlers( databaseCommand );
+
+                    databaseCommand.DbCommand.OpenConnection();
+                    dbDataReader = databaseCommand.DbCommand.ExecuteReader();
+                }
+                catch ( Exception exception )
+                {
+                    Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandUnhandledExceptionEventHandlers( exception, databaseCommand );
+                    throw;
+                }
+
+                var readerHasRows = false;
+                do
+                {
+                    try
+                    {
+                        readerHasRows = dbDataReader.HasRows;
+                        if ( !readerHasRows )
+                        {
+                            break;
+                        }
+                    }
+                    catch ( Exception exception )
+                    {
+                        Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandUnhandledExceptionEventHandlers( exception, databaseCommand );
+                        throw;
+                    }
+
+                    var hasNextRow = false;
+                    do
+                    {
+                        T projection = default( T );
+                        try
+                        {
+                            hasNextRow = dbDataReader.Read();
+
+                            if (hasNextRow)
+                            {
+                                projection = selector.Invoke( dbDataReader );
+                            }
+                        }
+                        catch ( Exception exception )
+                        {
+                            Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandUnhandledExceptionEventHandlers( exception, databaseCommand );
+                            throw;
+                        }
+
+                        if ( hasNextRow )
+                        {
+                            yield return projection;
+                        }
+                    }
+                    while ( hasNextRow );
+
+                    try
+                    {
+                        dbDataReader.NextResult();
+                    }
+                    catch ( Exception exception )
+                    {
+                        Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandUnhandledExceptionEventHandlers( exception, databaseCommand );
+                        throw;
+                    }
+                }
+                while ( readerHasRows );
+
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPostExecuteEventHandlers( databaseCommand );
+            }
+            finally
+            {
+                if ( dbDataReader != null )
+                {
+                    dbDataReader.Dispose();
+                }
+
+                if ( keepConnectionOpen == false )
+                {
+                    databaseCommand.DbCommand.CloseAndDispose();
+                    databaseCommand.DbCommand = null;
+                }
+            }
+        }
+
+        /// <summary>
         /// Executes a statement against a database and maps the results to a list of type <typeparamref name="T" /> using a given
         /// mapper function supplied to the <paramref name="mapper" /> parameter.
         /// </summary>
