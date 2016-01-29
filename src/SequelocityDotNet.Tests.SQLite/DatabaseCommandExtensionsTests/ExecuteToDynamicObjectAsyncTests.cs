@@ -1,43 +1,20 @@
 using System.Data;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace SequelocityDotNet.Tests.SQLite.DatabaseCommandExtensionsTests
 {
     [TestFixture]
-    public class ExecuteScalarTests
+    public class ExecuteToDynamicObjectAsyncTests
     {
-        [Test]
-        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set()
+        public class SuperHero
         {
-            // Arrange
-            const string sql = @"
-CREATE TABLE IF NOT EXISTS SuperHero
-(
-    SuperHeroId     INTEGER         NOT NULL    PRIMARY KEY     AUTOINCREMENT,
-    SuperHeroName	NVARCHAR(120)   NOT NULL,
-    UNIQUE(SuperHeroName)
-);
-
-INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
-
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
-        SuperHeroName
-FROM    SuperHero;
-";
-
-            // Act
-            var superHeroId = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
-                .SetCommandText( sql )
-                .ExecuteScalar()
-                .ToLong();
-
-            // Assert
-            Assert.That( superHeroId == 1 );
+            public long SuperHeroId;
+            public string SuperHeroName;
         }
 
         [Test]
-        [Description("This tests the generic version of the ExecuteScaler method.")]
-        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set_And_Convert_It_To_The_Type_Specified()
+        public void Should_Return_A_Task_Resulting_In_A_Map_Of_The_First_Result_To_A_Dynamic_Object()
         {
             // Arrange
             const string sql = @"
@@ -49,19 +26,23 @@ CREATE TABLE IF NOT EXISTS SuperHero
 );
 
 INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
+INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Batman' );
 
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+SELECT  SuperHeroId,
         SuperHeroName
 FROM    SuperHero;
 ";
 
             // Act
-            var superHeroId = Sequelocity.GetDatabaseCommand(ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString)
-                .SetCommandText(sql)
-                .ExecuteScalar<long>(); // Generic version of the ExecuteScalar method
+            var superHeroTask = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
+                .SetCommandText( sql )
+                .ExecuteToDynamicObjectAsync();
 
             // Assert
-            Assert.That(superHeroId == 1);
+            Assert.IsInstanceOf<Task<dynamic>>(superHeroTask);
+            Assert.NotNull(superHeroTask.Result);
+            Assert.That(superHeroTask.Result.SuperHeroId == 1);
+            Assert.That(superHeroTask.Result.SuperHeroName == "Superman");
         }
 
         [Test]
@@ -86,7 +67,8 @@ FROM    SuperHero;
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteScalar();
+            databaseCommand.ExecuteToDynamicObjectAsync()
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsNull( databaseCommand.DbCommand );
@@ -114,7 +96,8 @@ FROM    SuperHero;
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteScalar( true );
+            databaseCommand.ExecuteToDynamicObjectAsync( true )
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.That( databaseCommand.DbCommand.Connection.State == ConnectionState.Open );
@@ -133,8 +116,9 @@ FROM    SuperHero;
 
             // Act
             Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
-                .SetCommandText( "SELECT 1" )
-                .ExecuteScalar();
+                .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
+                .ExecuteToDynamicObjectAsync()
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsTrue( wasPreExecuteEventHandlerCalled );
@@ -150,8 +134,9 @@ FROM    SuperHero;
 
             // Act
             Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
-                .SetCommandText( "SELECT 1" )
-                .ExecuteScalar();
+                .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
+                .ExecuteToDynamicObjectAsync()
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsTrue( wasPostExecuteEventHandlerCalled );
@@ -169,9 +154,9 @@ FROM    SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
+            TestDelegate action = async () => await Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "asdf;lkj" )
-                .ExecuteScalar();
+                .ExecuteToDynamicObjectAsync();
 
             // Assert
             Assert.Throws<System.Data.SQLite.SQLiteException>( action );

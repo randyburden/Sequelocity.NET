@@ -50,15 +50,23 @@
   <ItemGroup>
     <Compile Include="ConnectionStringsNames.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\BeginTransactionTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteNonQueryAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteNonQueryTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteReaderAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteReaderTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteScalarAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteScalarTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataSetTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDataTableTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDynamicListAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDynamicListTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDynamicObjectAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToDynamicObjectTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToListAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToListTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToMapAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToMapTests.cs" />
+    <Compile Include="DatabaseCommandExtensionsTests\ExecuteToObjectAsyncTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\ExecuteToObjectTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertForMySqlTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertsForMySqlTests.cs" />
