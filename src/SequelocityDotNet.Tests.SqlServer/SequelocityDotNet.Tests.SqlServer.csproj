@@ -76,7 +76,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\SequelocityDotNet\SequelocityDotNet.csproj">
       <Project>{92b4ac2e-8f4a-47c7-918e-541fd48c16a0}</Project>
