@@ -1,43 +1,21 @@
 using System.Data;
 using NUnit.Framework;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace SequelocityDotNet.Tests.SQLite.DatabaseCommandExtensionsTests
 {
     [TestFixture]
-    public class ExecuteScalarTests
+    public class ExecuteToMapAsyncTests
     {
-        [Test]
-        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set()
+        public class SuperHero
         {
-            // Arrange
-            const string sql = @"
-CREATE TABLE IF NOT EXISTS SuperHero
-(
-    SuperHeroId     INTEGER         NOT NULL    PRIMARY KEY     AUTOINCREMENT,
-    SuperHeroName	NVARCHAR(120)   NOT NULL,
-    UNIQUE(SuperHeroName)
-);
-
-INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
-
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
-        SuperHeroName
-FROM    SuperHero;
-";
-
-            // Act
-            var superHeroId = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
-                .SetCommandText( sql )
-                .ExecuteScalar()
-                .ToLong();
-
-            // Assert
-            Assert.That( superHeroId == 1 );
+            public long SuperHeroId;
+            public string SuperHeroName;
         }
 
         [Test]
-        [Description("This tests the generic version of the ExecuteScaler method.")]
-        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set_And_Convert_It_To_The_Type_Specified()
+        public void Should_Call_The_DataRecordCall_Action_For_Each_Record_In_The_Result_Set()
         {
             // Arrange
             const string sql = @"
@@ -49,19 +27,30 @@ CREATE TABLE IF NOT EXISTS SuperHero
 );
 
 INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
+INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Batman' );
 
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+SELECT  SuperHeroId,
         SuperHeroName
 FROM    SuperHero;
 ";
 
             // Act
-            var superHeroId = Sequelocity.GetDatabaseCommand(ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString)
-                .SetCommandText(sql)
-                .ExecuteScalar<long>(); // Generic version of the ExecuteScalar method
+            var superHeroesTask = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
+                .SetCommandText( sql )
+                .ExecuteToMapAsync( record =>
+                {
+                    var obj = new SuperHero
+                    {
+                        SuperHeroId = record.GetValue( 0 ).ToLong(),
+                        SuperHeroName = record.GetValue( 1 ).ToString()
+                    };
+
+                    return obj;
+                } );
 
             // Assert
-            Assert.That(superHeroId == 1);
+            Assert.IsInstanceOf<Task<List<SuperHero>>>(superHeroesTask);
+            Assert.That( superHeroesTask.Result.Count == 2 );
         }
 
         [Test]
@@ -77,8 +66,9 @@ CREATE TABLE IF NOT EXISTS SuperHero
 );
 
 INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
+INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Batman' );
 
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+SELECT  SuperHeroId,
         SuperHeroName
 FROM    SuperHero;
 ";
@@ -86,7 +76,17 @@ FROM    SuperHero;
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteScalar();
+            databaseCommand.ExecuteToMapAsync( record =>
+            {
+                var obj = new SuperHero
+                {
+                    SuperHeroId = record.GetValue( 0 ).ToLong(),
+                    SuperHeroName = record.GetValue( 1 ).ToString()
+                };
+
+                return obj;
+            } )
+            .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsNull( databaseCommand.DbCommand );
@@ -105,8 +105,9 @@ CREATE TABLE IF NOT EXISTS SuperHero
 );
 
 INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
+INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Batman' );
 
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
+SELECT  SuperHeroId,
         SuperHeroName
 FROM    SuperHero;
 ";
@@ -114,7 +115,17 @@ FROM    SuperHero;
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteScalar( true );
+            databaseCommand.ExecuteToMapAsync( record =>
+            {
+                var obj = new SuperHero
+                {
+                    SuperHeroId = record.GetValue( 0 ).ToLong(),
+                    SuperHeroName = record.GetValue( 1 ).ToString()
+                };
+
+                return obj;
+            }, true )
+            .Wait(); // Block until the task completes.
 
             // Assert
             Assert.That( databaseCommand.DbCommand.Connection.State == ConnectionState.Open );
@@ -133,8 +144,18 @@ FROM    SuperHero;
 
             // Act
             Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
-                .SetCommandText( "SELECT 1" )
-                .ExecuteScalar();
+                .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
+                .ExecuteToMapAsync( record =>
+                {
+                    var obj = new SuperHero
+                    {
+                        SuperHeroId = record.GetValue( 0 ).ToLong(),
+                        SuperHeroName = record.GetValue( 1 ).ToString()
+                    };
+
+                    return obj;
+                } )
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsTrue( wasPreExecuteEventHandlerCalled );
@@ -150,8 +171,18 @@ FROM    SuperHero;
 
             // Act
             Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
-                .SetCommandText( "SELECT 1" )
-                .ExecuteScalar();
+                .SetCommandText( "SELECT 1 as SuperHeroId, 'Superman' as SuperHeroName" )
+                .ExecuteToMapAsync( record =>
+                {
+                    var obj = new SuperHero
+                    {
+                        SuperHeroId = record.GetValue( 0 ).ToLong(),
+                        SuperHeroName = record.GetValue( 1 ).ToString()
+                    };
+
+                    return obj;
+                } )
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsTrue( wasPostExecuteEventHandlerCalled );
@@ -169,9 +200,18 @@ FROM    SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
+            TestDelegate action = async () => await Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "asdf;lkj" )
-                .ExecuteScalar();
+                .ExecuteToMapAsync( record =>
+                {
+                    var obj = new SuperHero
+                    {
+                        SuperHeroId = record.GetValue( 0 ).ToLong(),
+                        SuperHeroName = record.GetValue( 1 ).ToString()
+                    };
+
+                    return obj;
+                } );
 
             // Assert
             Assert.Throws<System.Data.SQLite.SQLiteException>( action );

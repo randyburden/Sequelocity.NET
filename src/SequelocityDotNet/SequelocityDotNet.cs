@@ -42,6 +42,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SequelocityDotNet
 {
@@ -1031,6 +1032,44 @@ namespace SequelocityDotNet
             return numberOfRowsAffected;
         }
 
+        /// <summary>Executes a statement against the database asynchronously and returns the number of rows affected.</summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>A <see cref="Task{TResult}"/> resulting in the number of rows affected.</returns>
+        /// <exception cref="Exception">Unexpected exception.</exception>
+        public static async Task<int> ExecuteNonQueryAsync(this DatabaseCommand databaseCommand, bool keepConnectionOpen = false)
+        {
+            int numberOfRowsAffected;
+
+            try
+            {
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPreExecuteEventHandlers(databaseCommand);
+
+                await databaseCommand.DbCommand.OpenConnectionAsync();
+
+                numberOfRowsAffected = await databaseCommand.DbCommand.ExecuteNonQueryAsync();
+
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPostExecuteEventHandlers(databaseCommand);
+            }
+            catch (Exception exception)
+            {
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandUnhandledExceptionEventHandlers(exception, databaseCommand);
+
+                throw;
+            }
+            finally
+            {
+                if (keepConnectionOpen == false)
+                {
+                    databaseCommand.DbCommand.CloseAndDispose();
+
+                    databaseCommand.DbCommand = null;
+                }
+            }
+
+            return numberOfRowsAffected;
+        }
+
         /// <summary>
         /// Executes the query and returns the first column of the first row in the result set returned by the query. All other
         /// columns and rows are ignored.
@@ -1075,6 +1114,49 @@ namespace SequelocityDotNet
         }
 
         /// <summary>
+        /// Executes the query asynchronously and returns the first column of the first row in the result set returned by the query.
+        /// All other columns and rows are ignored.
+        /// </summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>A <see cref="Task{TResult}"/> resulting in the first column of the first row in the result set.</returns>
+        public static async Task<object> ExecuteScalarAsync(this DatabaseCommand databaseCommand, bool keepConnectionOpen = false)
+        {
+            object returnValue;
+
+            try
+            {
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPreExecuteEventHandlers(databaseCommand);
+
+                await databaseCommand.DbCommand.OpenConnectionAsync();
+
+                returnValue = await databaseCommand.DbCommand.ExecuteScalarAsync();
+
+                if (returnValue == DBNull.Value)
+                    returnValue = null;
+
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPostExecuteEventHandlers(databaseCommand);
+            }
+            catch (Exception exception)
+            {
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandUnhandledExceptionEventHandlers(exception, databaseCommand);
+
+                throw;
+            }
+            finally
+            {
+                if (keepConnectionOpen == false)
+                {
+                    databaseCommand.DbCommand.CloseAndDispose();
+
+                    databaseCommand.DbCommand = null;
+                }
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
         /// Executes the query and returns the first column of the first row in the result set returned by the query. All other
         /// columns and rows are ignored.
         /// </summary>
@@ -1095,6 +1177,32 @@ namespace SequelocityDotNet
         public static T ExecuteScalar<T>( this DatabaseCommand databaseCommand, bool keepConnectionOpen = false )
         {
             object returnValue = databaseCommand.ExecuteScalar( keepConnectionOpen );
+
+            return returnValue.ConvertTo<T>();
+        }
+
+        /// <summary>
+        /// Executes the query asynchronously and returns the first column of the first row in the result set returned by the query.
+        /// All other columns and rows are ignored.
+        /// </summary>
+        /// <typeparam name="T">Type to convert the result to.</typeparam>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> resulting in the first column of the first row in the result set converted to a type
+        /// of <typeparamref name="T" />.
+        /// </returns>
+        /// <exception cref="TypeConverter.TypeConversionException">
+        /// Thrown when an error occurs attempting to convert a value to an
+        /// enum.
+        /// </exception>
+        /// <exception cref="TypeConverter.TypeConversionException">
+        /// Thrown when an error occurs attempting to convert a value to a
+        /// type.
+        /// </exception>
+        public static async Task<T> ExecuteScalarAsync<T>(this DatabaseCommand databaseCommand, bool keepConnectionOpen = false)
+        {
+            object returnValue = await databaseCommand.ExecuteScalarAsync(keepConnectionOpen);
 
             return returnValue.ConvertTo<T>();
         }
@@ -1252,6 +1360,57 @@ namespace SequelocityDotNet
         }
 
         /// <summary>
+        /// Executes a statement against the database asynchronously and calls the <paramref name="dataRecordCallback" /> action for each record
+        /// returned.
+        /// </summary>
+        /// <remarks>
+        /// For safety the DbDataReader is returned as an IDataRecord to the callback so that callers cannot modify the current row
+        /// being read.
+        /// </remarks>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="dataRecordCallback">Action called for each record returned.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        public static async Task ExecuteReaderAsync(this DatabaseCommand databaseCommand, Action<IDataRecord> dataRecordCallback, bool keepConnectionOpen = false)
+        {
+            try
+            {
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPreExecuteEventHandlers(databaseCommand);
+
+                await databaseCommand.DbCommand.OpenConnectionAsync();
+
+                using (DbDataReader dbDataReader = await databaseCommand.DbCommand.ExecuteReaderAsync())
+                {
+                    while (dbDataReader.HasRows)
+                    {
+                        while (await dbDataReader.ReadAsync())
+                        {
+                            dataRecordCallback.Invoke(dbDataReader);
+                        }
+
+                        await dbDataReader.NextResultAsync();
+                    }
+                }
+
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandPostExecuteEventHandlers(databaseCommand);
+            }
+            catch (Exception exception)
+            {
+                Sequelocity.ConfigurationSettings.EventHandlers.InvokeDatabaseCommandUnhandledExceptionEventHandlers(exception, databaseCommand);
+
+                throw;
+            }
+            finally
+            {
+                if (keepConnectionOpen == false)
+                {
+                    databaseCommand.DbCommand.CloseAndDispose();
+
+                    databaseCommand.DbCommand = null;
+                }
+            }
+        }
+
+        /// <summary>
         /// Executes a statement against a database and maps the results to a list of type <typeparamref name="T" /> using a given
         /// mapper function supplied to the <paramref name="mapper" /> parameter.
         /// </summary>
@@ -1278,6 +1437,32 @@ namespace SequelocityDotNet
         }
 
         /// <summary>
+        /// Executes a statement against a database asynchronously and maps the results to a list of type <typeparamref name="T" />
+        /// using a given mapper function supplied to the <paramref name="mapper" /> parameter.
+        /// </summary>
+        /// <typeparam name="T">The type to map the results to.</typeparam>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="mapper">
+        /// A method that takes an <see cref="IDataRecord" /> as an argument and returns an instance of type
+        /// <typeparamref name="T" />.
+        /// </param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>A <see cref="Task{TResult}"/> resulting in the results mapped to a list of type <typeparamref name="T" />.</returns>
+        public static async Task<List<T>> ExecuteToMapAsync<T>(this DatabaseCommand databaseCommand, Func<IDataRecord, T> mapper, bool keepConnectionOpen = false)
+        {
+            var list = new List<T>();
+
+            await databaseCommand.ExecuteReaderAsync(reader =>
+            {
+                T mappedObject = mapper.Invoke(reader);
+
+                list.Add(mappedObject);
+            }, keepConnectionOpen);
+
+            return list;
+        }
+
+        /// <summary>
         /// Executes a statement against a database and maps matching column names to a list of type <typeparamref name="T" />.
         /// </summary>
         /// <typeparam name="T">The type to map the results to.</typeparam>
@@ -1287,6 +1472,18 @@ namespace SequelocityDotNet
         public static List<T> ExecuteToList<T>( this DatabaseCommand databaseCommand, bool keepConnectionOpen = false )
         {
             return databaseCommand.ExecuteToMap( DataRecordMapper.Map<T>, keepConnectionOpen );
+        }
+
+        /// <summary>
+        /// Executes a statement against a database asynchronously and maps matching column names to a list of type <typeparamref name="T" />.
+        /// </summary>
+        /// <typeparam name="T">The type to map the results to.</typeparam>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>A <see cref="Task{TResult}"/> resulting in the results mapped to a list of type <typeparamref name="T" />.</returns>
+        public static Task<List<T>> ExecuteToListAsync<T>(this DatabaseCommand databaseCommand, bool keepConnectionOpen = false)
+        {
+            return databaseCommand.ExecuteToMapAsync(DataRecordMapper.Map<T>, keepConnectionOpen);
         }
 
         /// <summary>
@@ -1301,6 +1498,18 @@ namespace SequelocityDotNet
             return databaseCommand.ExecuteToList<T>( keepConnectionOpen ).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Executes a statement against a database asynchronously and maps matching column names to a type of <typeparamref name="T" />.
+        /// </summary>
+        /// <typeparam name="T">The type to map the results to.</typeparam>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>A <see cref="Task{TResult}"/> resulting in the results mapped to a type of <typeparamref name="T" />.</returns>
+        public static async Task<T> ExecuteToObjectAsync<T>(this DatabaseCommand databaseCommand, bool keepConnectionOpen = false) where T : new()
+        {
+            return (await databaseCommand.ExecuteToListAsync<T>(keepConnectionOpen)).FirstOrDefault();
+        }
+
         /// <summary>Executes a statement against a database and maps the results to a list of type dynamic.</summary>
         /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
         /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
@@ -1310,6 +1519,15 @@ namespace SequelocityDotNet
             return databaseCommand.ExecuteToMap( DataRecordMapper.MapDynamic, keepConnectionOpen );
         }
 
+        /// <summary>Executes a statement against a database asynchronously and maps the results to a list of type dynamic.</summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>A <see cref="Task{TResult}"/> resulting in the results mapped to a list of type dynamic.</returns>
+        public static Task<List<dynamic>> ExecuteToDynamicListAsync(this DatabaseCommand databaseCommand, bool keepConnectionOpen = false)
+        {
+            return databaseCommand.ExecuteToMapAsync(DataRecordMapper.MapDynamic, keepConnectionOpen);
+        }
+
         /// <summary>Executes a statement against a database and maps the result to a dynamic object.</summary>
         /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
         /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
@@ -1317,6 +1535,15 @@ namespace SequelocityDotNet
         public static dynamic ExecuteToDynamicObject( this DatabaseCommand databaseCommand, bool keepConnectionOpen = false )
         {
             return databaseCommand.ExecuteToDynamicList( keepConnectionOpen ).FirstOrDefault();
+        }
+
+        /// <summary>Executes a statement against a database asynchronously and maps the result to a dynamic object.</summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="keepConnectionOpen">Optional parameter indicating whether to keep the connection open. Default is false.</param>
+        /// <returns>Result mapped to a dynamic object.</returns>
+        public static async Task<dynamic> ExecuteToDynamicObjectAsync(this DatabaseCommand databaseCommand, bool keepConnectionOpen = false)
+        {
+            return (await databaseCommand.ExecuteToDynamicListAsync(keepConnectionOpen)).FirstOrDefault();
         }
 
         /// <summary>Executes a statement against a database and populates the results into a <see cref="DataSet" />.</summary>
@@ -2252,6 +2479,19 @@ namespace SequelocityDotNet
             if ( dbCommand.Connection.State != ConnectionState.Open )
             {
                 dbCommand.Connection.Open();
+            }
+
+            return dbCommand;
+        }
+
+        /// <summary>Opens a database connection asynchronously.</summary>
+        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
+        /// <returns>A <see cref="Task{TResult}"/> resulting in the given <see cref="DbCommand" /> instance.</returns>
+        public static async Task<DbCommand> OpenConnectionAsync(this DbCommand dbCommand)
+        {
+            if (dbCommand.Connection.State != ConnectionState.Open)
+            {
+                await dbCommand.Connection.OpenAsync();
             }
 
             return dbCommand;

@@ -1,13 +1,14 @@
 using System.Data;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace SequelocityDotNet.Tests.SQLite.DatabaseCommandExtensionsTests
 {
     [TestFixture]
-    public class ExecuteScalarTests
+    public class ExecuteNonQueryAsyncTests
     {
         [Test]
-        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set()
+        public void Should_Return_A_Task_Resulting_In_The_Number_Of_Affected_Rows()
         {
             // Arrange
             const string sql = @"
@@ -18,50 +19,17 @@ CREATE TABLE IF NOT EXISTS SuperHero
     UNIQUE(SuperHeroName)
 );
 
-INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
-
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
-        SuperHeroName
-FROM    SuperHero;
+INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert should trigger 1 row affected */
 ";
 
             // Act
-            var superHeroId = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
+            var rowsAffectedTask = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql )
-                .ExecuteScalar()
-                .ToLong();
+                .ExecuteNonQueryAsync();
 
             // Assert
-            Assert.That( superHeroId == 1 );
-        }
-
-        [Test]
-        [Description("This tests the generic version of the ExecuteScaler method.")]
-        public void Should_Return_The_First_Column_Of_The_First_Row_In_The_Result_Set_And_Convert_It_To_The_Type_Specified()
-        {
-            // Arrange
-            const string sql = @"
-CREATE TABLE IF NOT EXISTS SuperHero
-(
-    SuperHeroId     INTEGER         NOT NULL    PRIMARY KEY     AUTOINCREMENT,
-    SuperHeroName	NVARCHAR(120)   NOT NULL,
-    UNIQUE(SuperHeroName)
-);
-
-INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
-
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
-        SuperHeroName
-FROM    SuperHero;
-";
-
-            // Act
-            var superHeroId = Sequelocity.GetDatabaseCommand(ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString)
-                .SetCommandText(sql)
-                .ExecuteScalar<long>(); // Generic version of the ExecuteScalar method
-
-            // Assert
-            Assert.That(superHeroId == 1);
+            Assert.IsInstanceOf<Task<int>>(rowsAffectedTask);
+            Assert.That( rowsAffectedTask.Result == 1 );
         }
 
         [Test]
@@ -76,17 +44,14 @@ CREATE TABLE IF NOT EXISTS SuperHero
     UNIQUE(SuperHeroName)
 );
 
-INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
-
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
-        SuperHeroName
-FROM    SuperHero;
+INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert should trigger 1 row affected */
 ";
             var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteScalar();
+            databaseCommand.ExecuteNonQueryAsync()
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsNull( databaseCommand.DbCommand );
@@ -104,17 +69,14 @@ CREATE TABLE IF NOT EXISTS SuperHero
     UNIQUE(SuperHeroName)
 );
 
-INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' );
-
-SELECT  SuperHeroId, /* This should be the only value returned from ExecuteScalar */
-        SuperHeroName
-FROM    SuperHero;
+INSERT OR IGNORE INTO SuperHero VALUES ( NULL, 'Superman' ); /* This insert should trigger 1 row affected */
 ";
             var databaseCommand = Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( sql );
 
             // Act
-            databaseCommand.ExecuteScalar( true );
+            databaseCommand.ExecuteNonQueryAsync( true )
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.That( databaseCommand.DbCommand.Connection.State == ConnectionState.Open );
@@ -134,7 +96,8 @@ FROM    SuperHero;
             // Act
             Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "SELECT 1" )
-                .ExecuteScalar();
+                .ExecuteNonQueryAsync()
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsTrue( wasPreExecuteEventHandlerCalled );
@@ -151,7 +114,8 @@ FROM    SuperHero;
             // Act
             Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
                 .SetCommandText( "SELECT 1" )
-                .ExecuteScalar();
+                .ExecuteNonQueryAsync()
+                .Wait(); // Block until the task completes.
 
             // Assert
             Assert.IsTrue( wasPostExecuteEventHandlerCalled );
@@ -169,9 +133,9 @@ FROM    SuperHero;
             } );
 
             // Act
-            TestDelegate action = () => Sequelocity.GetDatabaseCommandForSQLite( ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString )
-                .SetCommandText( "asdf;lkj" )
-                .ExecuteScalar();
+            TestDelegate action = async () => await Sequelocity.GetDatabaseCommandForSQLite(ConnectionStringsNames.SqliteInMemoryDatabaseConnectionString)
+                .SetCommandText("asdf;lkj")
+                .ExecuteNonQueryAsync();
 
             // Assert
             Assert.Throws<System.Data.SQLite.SQLiteException>( action );
