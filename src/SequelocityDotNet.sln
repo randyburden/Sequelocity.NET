@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet", "SequelocityDotNet\SequelocityDotNet.csproj", "{92B4AC2E-8F4A-47C7-918E-541FD48C16A0}"
 EndProject
@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{390090
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequelocityDotNet.Tests.PostgreSQL", "SequelocityDotNet.Tests.PostgreSQL\SequelocityDotNet.Tests.PostgreSQL.csproj", "{62E1B0B4-745A-45FD-8CD9-ECDE02A1714E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B4E7BCF-FCA8-4604-9000-45E9ECE2290D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62E1B0B4-745A-45FD-8CD9-ECDE02A1714E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62E1B0B4-745A-45FD-8CD9-ECDE02A1714E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62E1B0B4-745A-45FD-8CD9-ECDE02A1714E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62E1B0B4-745A-45FD-8CD9-ECDE02A1714E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

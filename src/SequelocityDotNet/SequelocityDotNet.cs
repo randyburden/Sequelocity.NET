@@ -200,6 +200,29 @@ namespace SequelocityDotNet
             return GetDatabaseCommand( connectionStringOrName, "MySql.Data.MySqlClient" );
         }
 
+        /// <summary>Gets a <see cref="DatabaseCommand" /> that interacts with a PostgreSQL database.</summary>
+        /// <param name="connectionStringOrName">Connection string or connection string name.</param>
+        /// <returns>A new <see cref="DatabaseCommand" /> instance.</returns>
+        /// <exception cref="ConnectionStringNotFoundException">
+        /// Thrown when no ConnectionString could be found. A valid ConnectionString or Connection String Name must be supplied in
+        /// the 'connectionStringOrName' parameter or by setting a default in either the
+        /// 'DatabaseCommand.ConfigurationSettings.Default.ConnectionStringName' or
+        /// 'DatabaseCommand.ConfigurationSettings.Default.ConnectionString' properties.
+        /// </exception>
+        /// <exception cref="DbProviderFactoryNotFoundException">
+        /// Thrown when no DbProviderFactory could be found. A DbProviderFactory invariant name must be supplied in the connection
+        /// string settings 'providerName' attribute in the applications config file, in the 'dbProviderFactoryInvariantName'
+        /// parameter, or by setting a default in the
+        /// 'DatabaseCommand.ConfigurationSettings.Default.DbProviderFactoryInvariantName' property.
+        /// </exception>
+        /// <exception cref="Exception">
+        /// An unknown error occurred creating a connection as the call to DbProviderFactory.CreateConnection() returned null.
+        /// </exception>
+        public static DatabaseCommand GetDatabaseCommandForPostgreSQL(string connectionStringOrName = null)
+        {
+            return GetDatabaseCommand(connectionStringOrName, "Npgsql");
+        }
+
         /// <summary>Attempts to create a <see cref="DbConnection" /> using several strategies.</summary>
         /// <remarks>
         /// This method attempts to use several strategies to locate a ConnectionString and DbProviderFactory in order to create a
@@ -894,6 +917,54 @@ namespace SequelocityDotNet
         public static DatabaseCommand GenerateInsertsForMySql<T>( this DatabaseCommand databaseCommand, List<T> listOfObjects, string tableName = null )
         {
             databaseCommand.DbCommand.GenerateInsertsForMySql( listOfObjects, tableName );
+
+            return databaseCommand;
+        }
+
+        /// <summary>
+        /// Generates a parameterized PostgreSQL INSERT statement from the given object and adds it to the
+        /// <see cref="DatabaseCommand" />.
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using PostgreSQL's LastVal() function.
+        /// </para>
+        /// </summary>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="obj">Object to generate the SQL INSERT statement from.</param>
+        /// <param name="tableName">Optional table name to insert into. If none is supplied, it will use the type name.</param>
+        /// <returns>The given <see cref="DatabaseCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DatabaseCommand GenerateInsertForPostgreSQL(this DatabaseCommand databaseCommand, object obj, string tableName = null)
+        {
+            databaseCommand.DbCommand.GenerateInsertForPostgreSQL(obj, tableName);
+
+            return databaseCommand;
+        }
+
+        /// <summary>
+        /// Generates a list of concatenated parameterized PostgreSQL INSERT statements from the given list of objects and adds it to
+        /// the <see cref="DatabaseCommand" />.
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using PostgreSQL's LastVal() function.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">Type of the objects in the list.</typeparam>
+        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
+        /// <param name="listOfObjects">List of objects to generate the SQL INSERT statements from.</param>
+        /// <param name="tableName">
+        /// Optional table name to insert into. If none is supplied, it will use the type name. Note that this parameter is
+        /// required when passing in an anonymous object or an <see cref="ArgumentNullException" /> will be thrown.
+        /// </param>
+        /// <returns>The given <see cref="DatabaseCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DatabaseCommand GenerateInsertsForPostgreSQL<T>(this DatabaseCommand databaseCommand, List<T> listOfObjects, string tableName = null)
+        {
+            databaseCommand.DbCommand.GenerateInsertsForPostgreSQL(listOfObjects, tableName);
 
             return databaseCommand;
         }
@@ -2619,6 +2690,68 @@ SELECT LAST_INSERT_ID() AS LastInsertedId;
             foreach( T obj in listOfObjects )
             {
                 dbCommand.GenerateInsertForMySql( obj, tableName );
+            }
+
+            return dbCommand;
+        }
+
+        /// <summary>
+        /// Generates a parameterized PostgreSQL INSERT statement from the given object and adds it to the <see cref="DbCommand" />
+        /// .
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using PostgreSQL's LastVal() function.
+        /// </para>
+        /// </summary>
+        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
+        /// <param name="obj">Object to generate the SQL INSERT statement from.</param>
+        /// <param name="tableName">
+        /// Optional table name to insert into. If none is supplied, it will use the type name. Note that this parameter is
+        /// required when passing in an anonymous object or an <see cref="ArgumentNullException" /> will be thrown.
+        /// </param>
+        /// <returns>The given <see cref="DbCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DbCommand GenerateInsertForPostgreSQL(this DbCommand dbCommand, object obj, string tableName = null)
+        {
+            const string postgreSQLInsertStatementTemplate = @"
+INSERT INTO {0}
+({1}
+)
+VALUES
+({2}
+);
+select LastVal();
+";
+
+            return dbCommand.GenerateInsertCommand(obj, postgreSQLInsertStatementTemplate, tableName, KeywordEscapeMethod.None);
+        }
+
+        /// <summary>
+        /// Generates a list of concatenated parameterized PostgreSQL INSERT statements from the given list of objects and adds it to
+        /// the <see cref="DbCommand" />.
+        /// <para>
+        /// Note that the generated query also selects the last inserted id using PostgreSQL's LastVal() function.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">Type of the objects in the list.</typeparam>
+        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
+        /// <param name="listOfObjects">List of objects to generate the SQL INSERT statements from.</param>
+        /// <param name="tableName">
+        /// Optional table name to insert into. If none is supplied, it will use the type name. Note that this parameter is
+        /// required when passing in an anonymous object or an <see cref="ArgumentNullException" /> will be thrown.
+        /// </param>
+        /// <returns>The given <see cref="DbCommand" /> instance.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// The value of 'tableName' cannot be null when the object passed is an anonymous
+        /// type.
+        /// </exception>
+        public static DbCommand GenerateInsertsForPostgreSQL<T>(this DbCommand dbCommand, List<T> listOfObjects, string tableName = null)
+        {
+            foreach(T obj in listOfObjects)
+            {
+                dbCommand.GenerateInsertForPostgreSQL(obj, tableName);
             }
 
             return dbCommand;
