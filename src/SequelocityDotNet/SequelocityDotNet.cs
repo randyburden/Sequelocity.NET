@@ -1689,7 +1689,7 @@ namespace SequelocityDotNet
         /// <summary>
         /// Cache that stores types as the key and the type's PropertyInfo and FieldInfo in a <see cref="OrderedDictionary"/> as the value.
         /// </summary>
-        private static readonly Dictionary<Type, OrderedDictionary> PropertiesAndFieldsCache = new Dictionary<Type, OrderedDictionary>();
+        private static readonly ConcurrentDictionary<Type, OrderedDictionary> PropertiesAndFieldsCache = new ConcurrentDictionary<Type, OrderedDictionary>();
 
         /// <summary>Gets the types properties and fields and caches the results.</summary>
         /// <param name="type">Type.</param>
@@ -1717,7 +1717,7 @@ namespace SequelocityDotNet
                 orderedDictionary[ fieldInfo.Name ] = fieldInfo;
             }
 
-            PropertiesAndFieldsCache.Add( type, orderedDictionary );
+            PropertiesAndFieldsCache.TryAdd( type, orderedDictionary );
 
             return orderedDictionary;
         }
