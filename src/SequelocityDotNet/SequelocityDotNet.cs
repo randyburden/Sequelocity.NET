@@ -1999,6 +1999,18 @@ namespace SequelocityDotNet
 
             object mappedObject = type.GetDefaultValue() ?? Activator.CreateInstance<T>();
 
+            // Handle special case field assignment for ExpandoObject type
+            if ( type == typeof ( ExpandoObject ) )
+            {
+                var dynamicDictionary = ( IDictionary<string, Object> ) mappedObject;
+                for ( int i = 0; i < fieldCount; i++ )
+                {
+                    dynamicDictionary.Add( dataRecord.GetName( i ), dataRecord.GetValue( i ) );
+                }
+
+                return ( T ) mappedObject;
+            }
+
             bool didAssignValues = false;
 
             // OrderedDictionary where the key is a case-insensitive property or field name and the value is the members corresponding PropertyInfo or FieldInfo
