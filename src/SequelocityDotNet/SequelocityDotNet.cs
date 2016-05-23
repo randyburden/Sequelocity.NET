@@ -1696,12 +1696,14 @@ namespace SequelocityDotNet
         /// <returns><see cref="OrderedDictionary"/> of lowercase member names and PropertyInfo or FieldInfo as the values.</returns>
         public static OrderedDictionary GetPropertiesAndFields( Type type )
         {
-            if ( PropertiesAndFieldsCache.ContainsKey( type ) )
+            OrderedDictionary orderedDictionary;
+
+            if ( PropertiesAndFieldsCache.TryGetValue( type, out orderedDictionary ) )
             {
-                return PropertiesAndFieldsCache[ type ];
+                return orderedDictionary;
             }
 
-            var orderedDictionary = new OrderedDictionary( StringComparer.InvariantCultureIgnoreCase );
+            orderedDictionary = new OrderedDictionary( StringComparer.InvariantCultureIgnoreCase );
             
             PropertyInfo[] properties = type.GetProperties();
 
@@ -1717,9 +1719,14 @@ namespace SequelocityDotNet
                 orderedDictionary[ fieldInfo.Name ] = fieldInfo;
             }
 
-            PropertiesAndFieldsCache.TryAdd( type, orderedDictionary );
-
-            return orderedDictionary;
+            if ( PropertiesAndFieldsCache.TryAdd( type, orderedDictionary ) )
+            {
+                return orderedDictionary;
+            }
+            else
+            {
+                return PropertiesAndFieldsCache[ type ];
+            }
         }
     }
 
