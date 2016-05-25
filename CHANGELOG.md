@@ -1,5 +1,5 @@
 <a name="0.6.0"></a>
-## v0.6.0 - Add Async Support and PostgreSQL support. Bug fixes and enhancements. (2016-05-25)
+## v0.6.0 - 'The End is Nigh' - Add Async Support and PostgreSQL support. Bug fixes and enhancements. (2016-05-25)
 
 Features:
 - Added Async Support and PostgreSQL support ( Many contributors, thanks! )
