@@ -632,19 +632,6 @@ namespace SequelocityDotNet
             return databaseCommand;
         }
 
-        /// <summary>Adds a parameter whose default value is <see cref="DBNull"/> when unassigned, to the <see cref="DatabaseCommand" />.</summary>
-        /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
-        /// <param name="parameterName">Parameter name.</param>
-        /// <param name="parameterValue">Parameter value.</param>
-        /// <param name="dbType">Parameter type.</param>
-        /// <returns>The given <see cref="DatabaseCommand" /> instance.</returns>
-        public static DatabaseCommand AddNullableParameter( this DatabaseCommand databaseCommand, string parameterName, object parameterValue, DbType dbType )
-        {
-            databaseCommand.DbCommand.AddNullableParameter( parameterName, parameterValue, dbType );
-
-            return databaseCommand;
-        }
-
         /// <summary>Adds a list of <see cref="DbParameter" />s to the <see cref="DatabaseCommand" />.</summary>
         /// <param name="databaseCommand"><see cref="DatabaseCommand" /> instance.</param>
         /// <param name="dbParameters">List of database parameters.</param>
@@ -2257,6 +2244,11 @@ namespace SequelocityDotNet
                 throw new ArgumentNullException( "parameterName" );
             }
 
+            if ( parameterValue == null )
+            {
+                parameterValue = DBNull.Value;
+            }
+
             DbParameter parameter = dbCommand.CreateParameter( parameterName, parameterValue );
 
             dbCommand.Parameters.Add( parameter );
@@ -2278,31 +2270,14 @@ namespace SequelocityDotNet
                 throw new ArgumentNullException( "parameterName" );
             }
 
+            if ( parameterValue == null )
+            {
+                parameterValue = DBNull.Value;
+            }
+
             DbParameter parameter = dbCommand.CreateParameter( parameterName, parameterValue, dbType );
 
             dbCommand.Parameters.Add( parameter );
-
-            return dbCommand;
-        }
-
-        /// <summary>Adds a parameter whose default value is <see cref="DBNull" /> when unassigned, to the <see cref="DbCommand" />.</summary>
-        /// <param name="dbCommand"><see cref="DbCommand" /> instance.</param>
-        /// <param name="parameterName">Parameter name.</param>
-        /// <param name="parameterValue">Parameter value.</param>
-        /// <param name="dbType">Parameter type.</param>
-        /// <returns>The given <see cref="DbCommand" /> instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="parameterName" /> parameter is null.</exception>
-        public static DbCommand AddNullableParameter( this DbCommand dbCommand, string parameterName, object parameterValue, DbType dbType )
-        {
-            if ( parameterValue is string 
-                 && string.IsNullOrEmpty( parameterValue.ToString() ) )
-            {
-                parameterValue = null;
-            }
-
-            dbCommand = parameterValue == null
-                ? dbCommand.AddParameter( parameterName, DBNull.Value )
-                : dbCommand.AddParameter( parameterName, parameterValue, dbType );
 
             return dbCommand;
         }

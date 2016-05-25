@@ -70,7 +70,6 @@
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertForSqlServerTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\GenerateInsertsForSqlServerTests.cs" />
     <Compile Include="DatabaseCommandExtensionsTests\SetTransactionTests.cs" />
-    <Compile Include="DbCommandExtensionsTests\AddNullableParameterTests.cs" />
     <Compile Include="Examples.cs" />
     <Compile Include="SequelocityTests\CreateDbConnectionTests.cs" />
     <Compile Include="SequelocityTests\GetDatabaseCommandForSqlServerTests.cs" />

@@ -90,6 +90,23 @@ namespace SequelocityDotNet.Tests.DbCommandExtensionsTests
         }
 
         [Test]
+        public void Should_Convert_A_Parameter_With_A_NULL_Value_To_DBNULL_Value()
+        {
+            // Arrange
+            var dbCommand = TestHelpers.GetDbCommand();
+
+            const string parameterName = "@SuperHeroName";
+
+            object parameterValue = null;
+
+            // Act
+            dbCommand = dbCommand.AddParameter( parameterName, parameterValue, DbType.AnsiString );
+
+            // Assert
+            Assert.That( dbCommand.Parameters[parameterName].Value == DBNull.Value );
+        }
+
+        [Test]
         public void Should_Throw_An_ArgumentNullException_When_Adding_A_Parameter_With_A_Null_Parameter_Name_And_A_DbType()
         {
             // Arrange
