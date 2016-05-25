@@ -12,6 +12,7 @@
     <description>Sequelocity.NET is a simple data access library for the Microsoft .NET Framework providing lightweight ADO.NET wrapper, object mapper, and helper functions.</description>
 	<summary>Sequelocity.NET is a simple data access library for the Microsoft .NET Framework providing lightweight ADO.NET wrapper, object mapper, and helper functions.</summary>
     <releaseNotes> 
+* 0.6.0 - Added Async support and PostgreSQL support.
 * 0.5.0 - Added AddNullableParameter method.
 * 0.4.0 - Added application name injection for SQL Server.
 * 0.3.0 - Added MySql support.
