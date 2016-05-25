@@ -1,3 +1,10 @@
+<a name="0.6.0"></a>
+## v0.6.0 - Add Async Support and PostgreSQL support. Bug fixes and enhancements. (2016-05-25)
+
+Features:
+- Added Async Support and PostgreSQL support ( Many contributors, thanks! )
+[Release Notes](https://github.com/AmbitEnergyLabs/Sequelocity.NET/releases/tag/v0.6.0)
+
 <a name="0.5.0"></a>
 ## v0.5.0 'Null versus DBNull.Value Cage Match, let the bloodshed begin' (2015-06-19)
 
