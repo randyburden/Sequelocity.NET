@@ -2,7 +2,6 @@ Sequelocity.NET
 ===============
 
 <a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/v/Sequelocity.svg" alt="NuGet Version" /></a> 
-<a href="https://www.nuget.org/packages/Sequelocity"><img src="https://img.shields.io/nuget/dt/Sequelocity.svg" alt="NuGet Download Count" /></a>
 <a href="https://ci.appveyor.com/project/AmbitEnergyLabs/sequelocity-net">
 	<img src="https://ci.appveyor.com/api/projects/status/github/ambitenergylabs/sequelocity.net?svg=true" alt="AppVeyor Build Status" />
 </a>
