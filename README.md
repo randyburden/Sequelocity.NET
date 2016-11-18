@@ -20,7 +20,7 @@ It can be used as a [C# single file drop in](https://raw.githubusercontent.com/A
 ###Documentation###
 
 - [Sequelocity Wiki](https://github.com/AmbitEnergyLabs/Sequelocity.NET/wiki) - We have a growing number of wiki articles including an overview of the project, detailed examples, and more.
-- XML Comments - All of the methods in the codebase our heavily XML commented which should give you plenty of intellisense description feel-goodness.
+- XML Comments - All of the methods in the codebase are heavily XML commented which should give you plenty of intellisense description feel-goodness.
 - API Documentation - We will also soon have MSDN-style API documentation to explore.
 
 ###Why Use It?###
