@@ -1,0 +1,9 @@
+Authors
+-------
+ - Randy Burden - https://github.com/randyburden
+ - David Whitlark - https://github.com/dwhitlark
+ - Jordan Beacham - https://github.com/jbeacham
+ - Michael Rudduck - https://github.com/mrudduck
+ - Rahul Rumalla - https://github.com/xizmark
+ - Taylor Wolfe - https://github.com/wolfester
+ - Jack Farrington - https://github.com/jackfarrington
