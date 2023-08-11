@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Sqlocity</id>
+    <version>$version$</version>
+    <title>Sqlocity.NET</title>
+    <authors>forked from Sequelocity project by Randy Burden, David Whitlark and contributors</authors>
+    <owners>Robb Sadler</owners>
+    <licenseUrl>https://github.com/RobbSadler/Sqlocity.NET/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/RobbSadler/Sqlocity.NET</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Sqlocity.NET is a simple data access library for the Microsoft .NET Framework providing a lightweight .NET Core wrapper, object mapper, and helper functions.</description>
+	<summary>Sqlocity.NET is a simple data access library for the Microsoft .NET Framework providing lightweight .NET Core wrapper, object mapper, and helper functions.</summary>
+    <releaseNotes> 
+	</releaseNotes>
+    <copyright>Copyright 2023</copyright>
+    <language>en-US</language>
+    <tags>Sqlocity sqlocity micro-orm orm sql database data-access sqlserver sqlite mysql</tags>
+  </metadata>
+</package>
